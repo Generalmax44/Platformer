@@ -1,4 +1,5 @@
 import { PhysicsBody } from "./physicsBody.js";
+import { Rect } from "./rect.js";
 import { Vec2D } from "./vec2D.js";
 
 export class player extends PhysicsBody {
@@ -16,20 +17,51 @@ export class player extends PhysicsBody {
         this.canJump = false;
     }
 
-    update(keys, canvasWidth, canvasHeight) {
+    update(keys, canvasWidth, canvasHeight, rect) {
         this.updateVel(keys);
         
         this.vel.x *= this.speed;
+        this.vel.y *= this.speed;
 
-        this.applyGravity();
+        // this.applyGravity();
 
         this.vel.add(this.acc);
         this.vel.y =  Math.round(this.vel.y * 10) / 10;
 
+        this.updatePos(rect)
+
         this.pos.add(this.vel);
+
         this.checkBoundaries(canvasWidth, canvasHeight);
 
         this.rect.update(this.pos);
+    }
+    updatePos(rect) {
+        let testPos = new Vec2D(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
+        let testRect = new Rect(testPos, this.width, this.height)
+        
+        if (testRect.collide(rect)){  
+            if (this.pos.x + this.width <= rect.pos.x) {
+                this.pos.x = rect.pos.x - this.width
+                this.vel.x = 0;
+                console.log("Left");
+            } else if (this.pos.x >= rect.pos.x + rect.width) {
+                this.pos.x == rect.pos.x + rect.width
+                this.vel.x = 0;
+                console.log("Right");
+            }
+
+            if (this.pos.y + this.height <= rect.pos.y) {
+                this.pos.y = rect.pos.y - this.height;
+                this.vel.y = 0;
+                console.log("Top");
+
+            } else if (this.pos.y >= rect.pos.y + rect.height) {
+                this.pos.y = rect.pos.y + rect.height;
+                this.vel.y = 0;
+                console.log("Bottom");
+            }
+        }
     }
 
     jump() {
@@ -54,15 +86,15 @@ export class player extends PhysicsBody {
             this.vel.x = 0;
         }
 
-        // if (keys.up && keys.dow) {
-        //     this.vel.y = 0;
-        // } else if (keys.up) {
-        //     this.vel.y = -1;
-        // } else if (keys.down) {
-        //     this.vel.y = 1;
-        // } else {
-        //     this.vel.y = 0;
-        // }
+        if (keys.up && keys.dow) {
+            this.vel.y = 0;
+        } else if (keys.up) {
+            this.vel.y = -1;
+        } else if (keys.down) {
+            this.vel.y = 1;
+        } else {
+            this.vel.y = 0;
+        }
     }
 
     checkBoundaries (canvasWidth, canvasHeight) {

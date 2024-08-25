@@ -77,17 +77,18 @@ export class Game {
         this.canvas.height = window.innerHeight;
     }
 
-    checkCollision(rect1, rect2) {
-        if (rect1.pos.y + rect1.height > rect2.pos.y && rect1.pos.y < rect2.pos.y + rect2.height) {
-            if (rect1.pos.x + rect1.width > rect2.pos.x && rect1.pos.x < rect2.pos.x + rect2.width) {
-                return true;
-            }
-        }
-    }
+    // advancedCollisions(rect1, rect2) {
+    //     if (rect1.pos.x + rect1.width < rect2.pos.x) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 
     update() {
-        this.player.update(this.keys, this.canvas.width, this.canvas.height);
-        if (this.checkCollision(this.player.rect, this.ground.rect)){
+        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.enemy.rect);
+       
+        if (this.player.rect.collide(this.ground.rect)) {
             this.player.pos.y = this.ground.pos.y - this.player.height
             this.player.acc.y = 0
             this.player.vel.y = 0 
