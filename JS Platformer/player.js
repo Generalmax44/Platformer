@@ -7,6 +7,8 @@ export class player extends PhysicsBody {
         
         this.speed = speed;
         this.vel = new Vec2D(0, 0)
+
+        this.acc = new Vec2D(0, 0)
     }
 
     update(keys, canvasWidth, canvasHeight) {
