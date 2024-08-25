@@ -87,7 +87,8 @@ export class Game {
         this.player.update(this.keys, this.canvas.width, this.canvas.height);
         if (this.checkCollision(this.player.rect, this.ground.rect)){
             this.player.pos.y = this.ground.pos.y - this.player.height
-            console.log("collision")
+            this.player.acc.y = 0
+            this.player.vel.y = 0 
         }
     }
 
@@ -103,7 +104,5 @@ export class Game {
         this.draw();
         requestAnimationFrame(() => this.gameLoop());
     }
-
-
 }
 

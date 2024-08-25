@@ -6,6 +6,9 @@ export class player extends PhysicsBody {
         super(x, y, width, height, color);
         
         this.speed = speed;
+
+        this.gravity = .3
+
         this.vel = new Vec2D(0, 0)
 
         this.acc = new Vec2D(0, 0)
@@ -15,9 +18,11 @@ export class player extends PhysicsBody {
         this.updateVel(keys);
         
         this.vel.x *= this.speed;
-        // this.vel.y *= this.speed;
 
         this.applyGravity();
+
+        this.vel.add(this.acc);
+        this.vel.y =  Math.round(this.vel.y * 10) / 10;
 
         this.pos.add(this.vel);
         this.checkBoundaries(canvasWidth, canvasHeight);
@@ -26,7 +31,7 @@ export class player extends PhysicsBody {
     }
 
     applyGravity () {
-        this.vel.y = + 1;
+        this.acc.y = this.gravity;
     }
 
     updateVel (keys) {
