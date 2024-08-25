@@ -1,7 +1,7 @@
 import { PhysicsBody } from './physicsBody.js';
+import { player } from './player.js';
 import { Ground } from './ground.js';
 import { Rect } from './rect.js';
-
 import { Vec2D } from './vec2D.js';
 
 export class Game {
@@ -16,8 +16,11 @@ export class Game {
             right: false
         };
 
-        this.player = new PhysicsBody(20, 20, 50, 50, 'blue', 5);
-        this.ground = new Ground(0, window.innerHeight - 30, window.innerWidth, 30, 'green');
+        this.groundSize = 50
+
+        this.player = new player(20, 20, 50, 50, 'blue', 5);
+        this.enemy = new PhysicsBody (200, 300, 50, 50, 'red')
+        this.ground = new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green');
 
 
         this.setupEventListeners();
@@ -72,13 +75,26 @@ export class Game {
         this.canvas.height = window.innerHeight;
     }
 
+    checkCollision(rect1, rect2) {
+        if (rect1.pos.y + rect1.height > rect2.pos.y && rect1.pos.y < rect2.pos.y + rect2.height) {
+            if (rect1.pos.x + rect1.width > rect2.pos.x && rect1.pos.x < rect2.pos.x + rect2.width) {
+                return true;
+            }
+        }
+    }
+
     update() {
         this.player.update(this.keys, this.canvas.width, this.canvas.height);
+        if (this.checkCollision(this.player.rect, this.ground.rect)){
+            this.player.pos.y = this.ground.pos.y - this.player.height
+            console.log("collision")
+        }
     }
 
     draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.player.draw(this.context);
+        this.enemy.draw(this.context);
         this.ground.draw(this.context);
     }
 
@@ -86,6 +102,8 @@ export class Game {
         this.update();
         this.draw();
         requestAnimationFrame(() => this.gameLoop());
-        // console.log(this.rectangle)
     }
+
+
 }
+
