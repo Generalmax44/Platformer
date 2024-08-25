@@ -36,6 +36,7 @@ export class player extends PhysicsBody {
 
         this.rect.update(this.pos);
     }
+    
     testCollisions(rect) {
         let testPos = new Vec2D(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
         let testRect = new Rect(testPos, this.width, this.height)
@@ -44,23 +45,23 @@ export class player extends PhysicsBody {
             if (this.pos.x + this.width <= rect.pos.x) {
                 this.pos.x = rect.pos.x - this.width
                 this.vel.x = 0;
-                console.log("Left");
+                // console.log("Left");
             } else if (this.pos.x >= rect.pos.x + rect.width) {
                 this.pos.x == rect.pos.x + rect.width
                 this.vel.x = 0;
-                console.log("Right");
+                // console.log("Right");
             }
 
             if (this.pos.y + this.height <= rect.pos.y) {
                 this.pos.y = rect.pos.y - this.height;
                 this.vel.y = 0;
                 this.canJump = true;
-                console.log(this.acc.y);
+                // console.log(this.acc.y);
 
             } else if (this.pos.y >= rect.pos.y + rect.height) {
                 this.pos.y = rect.pos.y + rect.height;
                 this.vel.y = 0;
-                console.log("Bottom");
+                // console.log("Bottom");
             }
         }
     }

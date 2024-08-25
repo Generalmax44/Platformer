@@ -81,23 +81,8 @@ export class Game {
         this.canvas.height = window.innerHeight;
     }
 
-    // advancedCollisions(rect1, rect2) {
-    //     if (rect1.pos.x + rect1.width < rect2.pos.x) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     update() {
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
-       
-        // if (this.player.rect.collide(this.ground.rect)) {
-        //     this.player.pos.y = this.ground.pos.y - this.player.height
-        //     this.player.acc.y = 0
-        //     this.player.vel.y = 0 
-        //     this.player.canJump = true;
-        // }
     }
 
     draw() {
