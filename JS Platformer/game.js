@@ -50,6 +50,8 @@ export class Game {
             case 'ArrowRight':
                 this.keys.right = true;
                 break;
+            case ' ':
+                this.player.jump()
         }
     }
 
