@@ -91,6 +91,7 @@ export class Game {
             this.player.pos.y = this.ground.pos.y - this.player.height
             this.player.acc.y = 0
             this.player.vel.y = 0 
+            this.player.canJump = true;
         }
     }
 

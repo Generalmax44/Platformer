@@ -11,8 +11,9 @@ export class player extends PhysicsBody {
         this.jumpPower = 10
 
         this.vel = new Vec2D(0, 0)
-
         this.acc = new Vec2D(0, 0)
+
+        this.canJump = false;
     }
 
     update(keys, canvasWidth, canvasHeight) {
@@ -32,7 +33,10 @@ export class player extends PhysicsBody {
     }
 
     jump() {
-        this.vel.y =- this.jumpPower;
+        if (this.canJump) {
+            this.vel.y =- this.jumpPower;
+            this.canJump = false;
+        }
     }
 
     applyGravity () {
