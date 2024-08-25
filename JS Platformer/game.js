@@ -3,6 +3,7 @@ import { player } from './player.js';
 import { Ground } from './ground.js';
 import { Rect } from './rect.js';
 import { Vec2D } from './vec2D.js';
+import { Platform } from './platform.js';
 
 export class Game {
     constructor () {
@@ -19,9 +20,12 @@ export class Game {
         this.groundSize = 50
 
         this.player = new player(20, 20, 50, 50, 'blue', 5);
-        this.enemy = new PhysicsBody (200, 300, 50, 50, 'red')
-        this.ground = new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green');
-
+        this.enemy = new PhysicsBody (200, 200, 50, 50, 'red')
+        
+        this.collisionEntities = [
+            new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
+            new Platform(200, 400, 400, 50, 'yellow')
+        ];
 
         this.setupEventListeners();
 
@@ -86,21 +90,22 @@ export class Game {
     // }
 
     update() {
-        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.enemy.rect);
+        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
        
-        if (this.player.rect.collide(this.ground.rect)) {
-            this.player.pos.y = this.ground.pos.y - this.player.height
-            this.player.acc.y = 0
-            this.player.vel.y = 0 
-            this.player.canJump = true;
-        }
+        // if (this.player.rect.collide(this.ground.rect)) {
+        //     this.player.pos.y = this.ground.pos.y - this.player.height
+        //     this.player.acc.y = 0
+        //     this.player.vel.y = 0 
+        //     this.player.canJump = true;
+        // }
     }
 
     draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.player.draw(this.context);
         this.enemy.draw(this.context);
-        this.ground.draw(this.context);
+        // this.ground.draw(this.context);
+        this.collisionEntities.forEach(obj => obj.draw(this.context));
     }
 
     gameLoop() {
