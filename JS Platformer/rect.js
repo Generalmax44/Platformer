@@ -12,7 +12,6 @@ export class Rect {
         context.fillRect(this.pos.x, this.pos.y, this.width, this.height);
     }
     collide (rect) {
-        // console.log(rect);
         if (this.pos.y + this.height > rect.pos.y && this.pos.y < rect.pos.y + rect.height) {
             if (this.pos.x + this.width > rect.pos.x && this.pos.x < rect.pos.x + rect.width) {
                 return true;

@@ -10,10 +10,51 @@ export class PhysicsBody {
 
         this.rect = new Rect(this.pos, this.width, this.height);
     }
-    update() {
+    update(rects) {
+        this.applyGravity();
+
+        rects.forEach(rect => this.testCollisions(rect));
+
+        this.pos.add(this.vel);
     }
 
     draw(context) {
         this.rect.draw(context, this.color);
+    }
+
+
+    applyGravity () {
+        this.acc.y = this.gravity;
+        this.vel.add(this.acc);
+        this.vel.y =  Math.round(this.vel.y * 10) / 10;
+    }
+
+    testCollisions(rect) {
+        let testPos = new Vec2D(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
+        let testRect = new Rect(testPos, this.width, this.height)
+        
+        if (testRect.collide(rect)){  
+            if (this.pos.x + this.width <= rect.pos.x) {
+                this.pos.x = rect.pos.x - this.width
+                this.vel.x = 0;
+                // console.log("Left");
+            } else if (this.pos.x >= rect.pos.x + rect.width) {
+                this.pos.x == rect.pos.x + rect.width
+                this.vel.x = 0;
+                // console.log("Right");
+            }
+
+            if (this.pos.y + this.height <= rect.pos.y) {
+                this.pos.y = rect.pos.y - this.height;
+                this.vel.y = 0;
+                this.canJump = true;
+                // console.log(this.acc.y);
+
+            } else if (this.pos.y >= rect.pos.y + rect.height) {
+                this.pos.y = rect.pos.y + rect.height;
+                this.vel.y = 0;
+                // console.log("Bottom");
+            }
+        }
     }
 }

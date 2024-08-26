@@ -4,6 +4,8 @@ import { Ground } from './ground.js';
 import { Rect } from './rect.js';
 import { Vec2D } from './vec2D.js';
 import { Platform } from './platform.js';
+import { Enemy } from './enemy.js';
+
 
 export class Game {
     constructor () {
@@ -14,23 +16,21 @@ export class Game {
             up: false,
             down: false,
             left: false,
-            right: false
+            right: false,
+            space: false
         };
 
         this.groundSize = 50
-
         this.player = new player(20, 20, 50, 50, 'blue', 5);
-        this.enemy = new PhysicsBody (200, 200, 50, 50, 'red')
+        this.enemy = new Enemy (900, 200, 50, 50, 'red')
         
         this.collisionEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
-            new Platform(200, 400, 400, 50, 'yellow')
+            new Platform(200, 500, 100, 20, 'yellow')
         ];
 
         this.setupEventListeners();
-
         this.resizeCanvas();
-
         this.gameLoop();
     }
 
@@ -55,7 +55,8 @@ export class Game {
                 this.keys.right = true;
                 break;
             case ' ':
-                this.player.jump()
+                this.keys.space = true;
+                break;
         }
     }
 
@@ -73,6 +74,9 @@ export class Game {
             case 'ArrowRight':
                 this.keys.right = false;
                 break;
+            case ' ':
+                this.keys.space = false;
+                break;
         }
     }
 
@@ -82,7 +86,14 @@ export class Game {
     }
 
     update() {
+        if (this.keys.space) {
+            this.player.jump();
+        }
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
+        this.enemy.update(this.collisionEntities)
+        if (this.player.rect.collide(this.enemy.rect)) {
+            console.log("Ligmna")
+        }
     }
 
     draw() {
