@@ -63,6 +63,9 @@ export class Game {
             this.score = 0;
             this.money = 0;
 
+            this.lastShotTime = 0; // Initialize last shot time
+            this.shootCooldown = 1000; // Cooldown period in milliseconds (1 second)
+
             this.initKeys();
             this.setupEventListeners();
             this.resizeCanvas();
@@ -92,7 +95,18 @@ export class Game {
     }
 
     click (event) {
-        this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
+        const currentTime = performance.now();
+        // Check if enough time has passed since the last shot
+        if (currentTime - this.lastShotTime >= this.shootCooldown) {
+            this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
+            console.log("Shoot!");
+          this.lastShotTime = currentTime; // Update the last shot time
+        } else {
+          console.log("Cannot shoot yet. Please wait.");
+        }
+    }
+    ShootCooldownIndicator () {
+        //diplay regen bar
     }
 
     handleKeyDown(event) {
