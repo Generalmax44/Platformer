@@ -13,30 +13,57 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
-        this.groundSize = 50
+        this.filePath = './config.json'; // Store the path for later use
+        this.dataLoaded = false;
+        this.loadData().then(() => {
+            this.dataLoaded = true; // Mark data as loaded
+            this.initialize(); // Optional: call a method to use data in constructor
+          });
+    }
 
-        this.player = new player(20, 20, 50, 50, 'blue', 7);
+    async loadData() {
+        try {
+          const response = await fetch(this.filePath); // Fetch the JSON file
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json(); // Parse the JSON data
+    
+          // Dynamically assign data to instance properties
+          for (const [key, value] of Object.entries(data)) {
+            this[key] = value;
+          }
+        } catch (error) {
+          console.error('Error fetching JSON data:', error);
+        }
+      }
 
-        this.environmentEntities = [
-            new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
-            new Platform(200, 100, 300, 20, 'orange'),
-            new Platform(400, 600, 300, 20, 'orange'),
-            new Platform(400, 350, 300, 20, 'orange'),
-            new Platform(120, 500, 300, 20, 'orange'),
-            new Platform(800, 300, 300, 20, 'orange'),
-            new Platform(1000, 600, 300, 20, 'orange')
-        ];
+    initialize() {
+        if (this.dataLoaded) {
 
-        this.bullets = [];
+            this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
 
-        this.enemies = [];
+            this.environmentEntities = [
+                new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
+                new Platform(200, 100, 300, 20, 'orange'),
+                new Platform(400, 600, 300, 20, 'orange'),
+                new Platform(400, 350, 300, 20, 'orange'),
+                new Platform(120, 500, 300, 20, 'orange'),
+                new Platform(800, 300, 300, 20, 'orange'),
+                new Platform(1000, 600, 300, 20, 'orange')
+            ];
 
-        this.score = 0;
+            this.bullets = [];
 
-        this.initKeys();
-        this.setupEventListeners();
-        this.resizeCanvas();
-        this.gameLoop();
+            this.enemies = [];
+
+            this.score = 0;
+
+            this.initKeys();
+            this.setupEventListeners();
+            this.resizeCanvas();
+            this.gameLoop();
+        }
     }
 
     setupEventListeners() {
@@ -61,7 +88,7 @@ export class Game {
     }
 
     click (event) {
-        this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), new Vec2D(event.clientX, event.clientY), 5, 'black'));
+        this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
     }
 
     handleKeyDown(event) {
@@ -222,6 +249,7 @@ export class Game {
         this.bulletEnvironmentCollisions();
 
         this.spawnEnemies();
+        console.log(this.test);
     }
 
     draw() {

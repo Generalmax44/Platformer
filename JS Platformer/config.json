@@ -1,4 +1,8 @@
 {
-    "playerWidth": 20,
-    "aldkfjhs": 10
+    "groundSize": 50,
+    "playerWidth": 50,
+    "playerHeight": 50,
+    "playerSpeed": 7,
+    "playerColor": "blue",
+    "jumpPower": 15
 }

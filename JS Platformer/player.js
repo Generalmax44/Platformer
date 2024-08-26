@@ -3,16 +3,16 @@ import { Rect } from "./rect.js";
 import { Vec2D } from "./vec2D.js";
 
 export class player extends PhysicsBody {
-    constructor(x, y, width, height, color, speed) {
+    constructor(x, y, width, height, color, speed, jumpPower) {
         super(x, y, width, height, color);
         
         this.speed = speed;
 
-        this.gravity = .7
-        this.jumpPower = 15
+        this.gravity = .7;
+        this.jumpPower = jumpPower;
 
-        this.vel = new Vec2D(0, 0)
-        this.acc = new Vec2D(0, 0)
+        this.vel = new Vec2D(0, 0);
+        this.acc = new Vec2D(0, 0);
 
         this.canJump = false;
     }
