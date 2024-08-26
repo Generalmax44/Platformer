@@ -66,6 +66,8 @@ export class Game {
             this.lastShotTime = 0; // Initialize last shot time
             this.shootCooldown = 1000; // Cooldown period in milliseconds (1 second)
 
+            this.alive = true;
+
             this.initKeys();
             this.setupEventListeners();
             this.resizeCanvas();
@@ -279,6 +281,22 @@ export class Game {
         }
     }
 
+    playerEnemyCollisions() {
+        this.enemies.forEach(enemy => {
+            if (enemy.rect.collide(this.player.rect)) {
+                this.alive = false;
+                console.log("Die");
+            }
+        });
+    }
+
+    displayGameOver() {
+        this.context.font = "60px Arial";
+        this.context.fillStyle = "red";
+        let text = "GAME OVER"
+        this.context.fillText(text, 200, 200);
+    }
+
     update() {
         this.updateGround();
 
@@ -286,11 +304,7 @@ export class Game {
        
         this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
            
-        this.enemies.forEach(enemy => {
-            if (enemy.rect.collide(this.player.rect)) {
-                console.log("Die");
-            }
-        });
+        this.playerEnemyCollisions();
 
         this.bullets.forEach(bullet => bullet.update());
         this.bulletCleanUp();
@@ -313,10 +327,15 @@ export class Game {
         this.displayScore();
         this.displayMoney();
         this.ShootCooldownIndicator();
+        if (!this.alive) {
+            this.displayGameOver();
+        }
     }
 
     gameLoop() {
-        this.update();
+        if (this.alive) {
+            this.update();
+        }
         this.draw();
         requestAnimationFrame(() => this.gameLoop());
     }
