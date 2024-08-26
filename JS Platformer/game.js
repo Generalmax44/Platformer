@@ -48,8 +48,7 @@ export class Game {
         window.addEventListener('click', (event) => this.click(event));
     }
     click (event) {
-        // console.log(event.clientX, event.clientY)
-        this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), new Vec2D(event.clientX, event.clientY), 5, 'purple'));
+        this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), new Vec2D(event.clientX, event.clientY), 5, 'black'));
     }
 
     handleKeyDown(event) {
@@ -126,6 +125,12 @@ export class Game {
         }
 
         this.bullets.forEach(obj => obj.update());
+
+        this.bullets.forEach(obj => {
+            if (obj.rect.collide(this.enemy.rect)) {
+                console.log("collidsion");
+            }
+        });
     }
 
     draw() {

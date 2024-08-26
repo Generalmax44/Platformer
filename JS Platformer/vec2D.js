@@ -8,4 +8,8 @@ export class Vec2D {
         this.x += vec.x;
         this.y += vec.y;
     }
+
+    getMagnitude() {
+        return Math.floor(Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2)));
+    }
  }
