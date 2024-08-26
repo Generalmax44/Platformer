@@ -154,8 +154,6 @@ export class Game {
                 if (bullet.rect.collide(obj.rect)) {
                     // Remove enemy and bullet from their respective arrays
                     this.bullets.splice(i, 1);
-                    console.log("Sugma Ballz");
-        
                     // Break out of the inner loop since the bullet has already been removed
                     break;
                 }
@@ -169,8 +167,6 @@ export class Game {
             if (bullet.pos.x > this.canvas.width + 10 || bullet.pos.x < -10 || bullet.pos.y < -10) {
                 // Remove enemy and bullet from their respective arrays
                 this.bullets.splice(i, 1);
-                console.log("Sugma Ballz");
-    
                 // Break out of the inner loop since the bullet has already been removed
                 break;
             }
@@ -184,12 +180,27 @@ export class Game {
         this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
     }
 
-    update() {
+    spawnEnemies() {
+        if (this.enemies.length == 0) {
+            this.enemies.push(new Enemy(900, 200, 50, 50, 'red'));
+            console.log("Ligma");
+        }
+    }
+
+    updateGround() {
         this.environmentEntities.forEach(entity => {
             if (entity instanceof Ground) {
-                entity.update(this.canvas.width, this.canvas.width)
+                entity.update(this.canvas.width, this.canvas.width);
             }
         });
+    }
+
+    getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    update() {
+        this.updateGround();
 
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
        
@@ -206,7 +217,8 @@ export class Game {
 
         this.bulletEnemyCollisions();
         this.bulletEnvironmentCollisions();
-        console.log(this.bullets.length);
+
+        this.spawnEnemies();
     }
 
     draw() {

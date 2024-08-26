@@ -10,12 +10,20 @@ export class Ground {
         
         this.rect = new Rect(this.pos, this.width, this.height);
     }
-    update(canvasWidth, canvasHeight){
-        this.rect.width = canvasWidth;
-        this.rect.height = canvasHeight;
+    update(canvasWidth, canvasHeight) {
+         this.reSizeGround(canvasWidth, canvasHeight)
     }
 
     draw(context) {
         this.rect.draw(context, this.color);
+    }
+
+    reSizeGround(canvasWidth, canvasHeight) {
+        if (this.width < canvasWidth) {
+            this.width = canvasWidth;
+            this.height = canvasHeight;
+            this.rect.width = this.width;
+            this.rect.height = this.height;
+        } 
     }
 }
