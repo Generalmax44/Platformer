@@ -5,6 +5,7 @@ import { Rect } from './rect.js';
 import { Vec2D } from './vec2D.js';
 import { Platform } from './platform.js';
 import { Enemy } from './enemy.js';
+import { Bullet } from './bullet.js';
 
 
 export class Game {
@@ -17,16 +18,21 @@ export class Game {
             down: false,
             left: false,
             right: false,
-            space: false
+            space: false,
+            a: false,
+            d: false,
+            w: false
         };
 
         this.groundSize = 50
         this.player = new player(20, 20, 50, 50, 'blue', 5);
         this.enemy = new Enemy (900, 200, 50, 50, 'red')
+        this.bullet = new Bullet(100, 100, 50, 'red')
+
         
         this.collisionEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
-            new Platform(200, 500, 100, 20, 'yellow')
+            new Platform(200, 600, 300, 20, 'orange')
         ];
 
         this.setupEventListeners();
@@ -57,6 +63,15 @@ export class Game {
             case ' ':
                 this.keys.space = true;
                 break;
+            case 'a':
+                this.keys.a = true;
+                break;
+            case 'd':
+                this.keys.d = true;
+                break
+            case 'w':
+            this.keys.w = true;
+            break
         }
     }
 
@@ -77,6 +92,15 @@ export class Game {
             case ' ':
                 this.keys.space = false;
                 break;
+            case 'a':
+                this.keys.a = false;
+                break;
+            case 'd':
+                this.keys.d = false;
+                break;
+            case 'w':
+                this.keys.w = false;
+                break
         }
     }
 
@@ -86,7 +110,7 @@ export class Game {
     }
 
     update() {
-        if (this.keys.space) {
+        if (this.keys.space || this.keys.w || this.keys.up) {
             this.player.jump();
         }
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
@@ -100,8 +124,8 @@ export class Game {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.player.draw(this.context);
         this.enemy.draw(this.context);
-        // this.ground.draw(this.context);
         this.collisionEntities.forEach(obj => obj.draw(this.context));
+        this.bullet.draw(this.context);
     }
 
     gameLoop() {

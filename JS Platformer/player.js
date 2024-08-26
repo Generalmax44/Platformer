@@ -8,8 +8,8 @@ export class player extends PhysicsBody {
         
         this.speed = speed;
 
-        this.gravity = .3
-        this.jumpPower = 10
+        this.gravity = .5
+        this.jumpPower = 15
 
         this.vel = new Vec2D(0, 0)
         this.acc = new Vec2D(0, 0)
@@ -39,11 +39,11 @@ export class player extends PhysicsBody {
     }
 
     updateVel (keys) {
-        if (keys.right && keys.left) {
+        if ((keys.d || keys.right) && (keys.left || keys.a)) {
             this.vel.x = 0;
-        } else if (keys.right) {
+        } else if (keys.right || keys.d) {
             this.vel.x = 1;
-        } else if (keys.left) {
+        } else if (keys.left || keys.a) {
             this.vel.x = -1;
         } else {
             this.vel.x = 0;
