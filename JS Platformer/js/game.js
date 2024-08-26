@@ -69,8 +69,10 @@ export class Game {
 
             this.alive = true;
 
-            this.button = new Button(20, 20, 100, 100, 'pink', 'purple') 
-
+            this.buttons = [
+                this.upgradeButton = new Button(20, 20, 100, 100, 'pink', 'purple'),
+                // new Button(400, 400, 100, 100, 'grey', 'red') 
+            ];
             this.initKeys();
             this.setupEventListeners();
             this.resizeCanvas();
@@ -84,7 +86,10 @@ export class Game {
         window.addEventListener('keyup', (event) => this.handleKeyUp(event));
         window.addEventListener('click', (event) => this.click(event));
         window.addEventListener('blur', () => this.initKeys());
-        window.addEventListener('mousemove', (event) => this.button.update(event.clientX, event.clientY));
+        window.addEventListener('mousemove', (event) => this.buttons.forEach(button => {
+            button.update(event.clientX, event.clientY);
+        }));
+            
     }
 
     initKeys () {
@@ -101,7 +106,7 @@ export class Game {
     }
 
     click (event) {
-        if (this.button.active) {
+        if (this.upgradeButton.active) {
             this.shootCooldown -= 100;
 
         } else{
@@ -340,7 +345,8 @@ export class Game {
         if (!this.alive) {
             this.displayGameOver();
         }
-        this.button.draw(this.context)
+        this.buttons.forEach(button => button.draw(this.context));
+        // this.button.draw(this.context)
     }
 
     gameLoop() {
