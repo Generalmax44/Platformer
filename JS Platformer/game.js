@@ -19,14 +19,17 @@ export class Game {
 
         this.environmentEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
-            new Platform(200, 600, 300, 20, 'orange')
+            new Platform(200, 100, 300, 20, 'orange'),
+            new Platform(400, 600, 300, 20, 'orange'),
+            new Platform(400, 350, 300, 20, 'orange'),
+            new Platform(120, 500, 300, 20, 'orange'),
+            new Platform(800, 300, 300, 20, 'orange'),
+            new Platform(1000, 600, 300, 20, 'orange')
         ];
 
         this.bullets = [];
 
-        this.enemies = [
-            new Enemy (900, 200, 50, 50, 'red')
-        ];
+        this.enemies = [];
 
         this.score = 0;
 
