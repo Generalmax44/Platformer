@@ -27,13 +27,14 @@ export class Game {
         this.groundSize = 50
         this.player = new player(20, 20, 50, 50, 'blue', 5);
         this.enemy = new Enemy (900, 200, 50, 50, 'red')
-        this.bullet = new Bullet(100, 100, 50, 'red')
+        // this.bullet = new Bullet(100, 100, 50, 'red')
 
-        
         this.collisionEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
             new Platform(200, 600, 300, 20, 'orange')
         ];
+
+        this.bullets = [];
 
         this.setupEventListeners();
         this.resizeCanvas();
@@ -44,6 +45,11 @@ export class Game {
         window.addEventListener('resize', () => this.resizeCanvas());
         window.addEventListener('keydown', (event) => this.handleKeyDown(event));
         window.addEventListener('keyup', (event) => this.handleKeyUp(event));
+        window.addEventListener('click', (event) => this.click(event));
+    }
+    click (event) {
+        console.log(event.clientX, event.clientY)
+        this.bullets.push(new Bullet(event.clientX, event.clientY, 5, 'purple'));
     }
 
     handleKeyDown(event) {
@@ -118,6 +124,8 @@ export class Game {
         if (this.player.rect.collide(this.enemy.rect)) {
             console.log("Ligmna")
         }
+
+        // console.log(this.bullets.length);
     }
 
     draw() {
@@ -125,7 +133,8 @@ export class Game {
         this.player.draw(this.context);
         this.enemy.draw(this.context);
         this.collisionEntities.forEach(obj => obj.draw(this.context));
-        this.bullet.draw(this.context);
+        this.bullets.forEach(obj => obj.draw(this.context));
+        // this.bullet.draw(this.context);
     }
 
     gameLoop() {
