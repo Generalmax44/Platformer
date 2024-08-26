@@ -102,8 +102,8 @@ export class Game {
 
     click (event) {
         if (this.button.active) {
-            console.log("click");
-            
+            this.shootCooldown -= 100;
+
         } else{
             const currentTime = performance.now();
             // Check if enough time has passed since the last shot
@@ -130,7 +130,7 @@ export class Game {
             rect2Width = 100;
             this.context.fillStyle = 'lime';
         } else{
-            rect2Width = (currentTime - this.lastShotTime) / 10;
+            rect2Width = ((currentTime - this.lastShotTime) / this.shootCooldown) * 100;
             this.context.fillStyle = 'yellow';
         }
         this.context.fillRect(rectX, rectY, rect2Width, rectHeight);    
