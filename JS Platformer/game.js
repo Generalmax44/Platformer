@@ -13,14 +13,13 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
-        this.initKeys();
+ 
 
         this.groundSize = 50
-        this.player = new player(20, 20, 50, 50, 'blue', 7);
-        this.enemy = new Enemy (900, 200, 50, 50, 'red')
-        // this.bullet = new Bullet(100, 100, 50, 'red')
 
-        this.collisionEntities = [
+        this.player = new player(20, 20, 50, 50, 'blue', 7);
+
+        this.environmentEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
             new Platform(200, 600, 300, 20, 'orange')
         ];
@@ -31,6 +30,7 @@ export class Game {
             new Enemy (900, 200, 50, 50, 'red')
         ];
 
+        this.initKeys();
         this.setupEventListeners();
         this.resizeCanvas();
         this.gameLoop();
@@ -124,36 +124,83 @@ export class Game {
         this.canvas.height = window.innerHeight;
     }
 
+    bulletEnemyCollisions() {
+        for (let i = this.bullets.length - 1; i >= 0; i--) {
+            let bullet = this.bullets[i];
+        
+            for (let j = this.enemies.length - 1; j >= 0; j--) {
+                let enemy = this.enemies[j];
+        
+                if (bullet.rect.collide(enemy.rect)) {
+                    // Remove enemy and bullet from their respective arrays
+                    this.enemies.splice(j, 1);
+                    this.bullets.splice(i, 1);
+                    console.log("Sugma Ballz");
+        
+                    // Break out of the inner loop since the bullet has already been removed
+                    break;
+                }
+            }
+        }
+    }
+
+    bulletEnvironmentCollisions() {
+        for (let i = this.bullets.length - 1; i >= 0; i--) {
+            let bullet = this.bullets[i];
+        
+            for (let j = this.environmentEntities.length - 1; j >= 0; j--) {
+                let obj = this.environmentEntities[j];
+        
+                if (bullet.rect.collide(obj.rect)) {
+                    // Remove enemy and bullet from their respective arrays
+                    this.bullets.splice(i, 1);
+                    console.log("Sugma Ballz");
+        
+                    // Break out of the inner loop since the bullet has already been removed
+                    break;
+                }
+            }
+        }
+    }
+
+    bulletCleanUp() {
+        for (let i = this.bullets.length - 1; i >= 0; i--) {
+            let bullet = this.bullets[i];
+            if (bullet.pos.x > this.canvas.width + 10 || bullet.pos.x < -10 || bullet.pos.y < -10) {
+                // Remove enemy and bullet from their respective arrays
+                this.bullets.splice(i, 1);
+                console.log("Sugma Ballz");
+    
+                // Break out of the inner loop since the bullet has already been removed
+                break;
+            }
+        }
+    }
+
     update() {
-        if (this.keys.space || this.keys.w || this.keys.up) {
-            this.player.jump();
-        }
-        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
-        this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.collisionEntities, this.player.pos));
-               
-        if (this.player.rect.collide(this.enemy.rect)) {
-            console.log("die")
-        }
+        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
+        this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
+           
+        this.enemies.forEach(enemy => {
+            if (enemy.rect.collide(this.player.rect)) {
+                console.log("Die");
+            }
+        });
 
         this.bullets.forEach(bullet => bullet.update());
+        this.bulletCleanUp();
 
-        this.bullets.forEach(bullet => {
-            this.enemies.forEach(enemy => {
-                if (bullet.rect.collide(enemy.rect)) {
-                    console.log("Sugma Ballz")
-                }
-            });
-        });
+        this.bulletEnemyCollisions();
+        this.bulletEnvironmentCollisions();
+        console.log(this.bullets.length);
     }
 
     draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.player.draw(this.context);
         this.enemies.forEach(enemy => enemy.draw(this.context));
-        // this.enemy.draw(this.context);
-        this.collisionEntities.forEach(obj => obj.draw(this.context));
+        this.environmentEntities.forEach(obj => obj.draw(this.context));
         this.bullets.forEach(obj => obj.draw(this.context));
-        // this.bullet.draw(this.context);
     }
 
     gameLoop() {

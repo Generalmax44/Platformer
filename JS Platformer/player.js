@@ -18,6 +18,9 @@ export class player extends PhysicsBody {
     }
 
     update(keys, canvasWidth, canvasHeight, rects) {
+        if (keys.space || keys.w || keys.up) {
+            this.jump();
+        }
         this.updateVel(keys);
         
         this.vel.x *= this.speed;
