@@ -99,14 +99,29 @@ export class Game {
         // Check if enough time has passed since the last shot
         if (currentTime - this.lastShotTime >= this.shootCooldown) {
             this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
-            console.log("Shoot!");
           this.lastShotTime = currentTime; // Update the last shot time
-        } else {
-          console.log("Cannot shoot yet. Please wait.");
-        }
+        } 
     }
     ShootCooldownIndicator () {
-        //diplay regen bar
+        const rect1Width = 100;
+        const rectHeight = 20;
+        const rectX = this.canvas.width - rect1Width - 10; // 10px margin from the right
+        const rectY = this.canvas.height - rectHeight - 10; // 10px margin from the bottom
+
+        // Draw the rectangle
+        this.context.fillStyle = 'red'; // Rectangle color
+        this.context.fillRect(rectX, rectY, rect1Width, rectHeight);
+
+        const currentTime = performance.now();
+        let rect2Width = 0;
+        if (currentTime - this.lastShotTime >= this.shootCooldown) {
+            rect2Width = 100;
+            this.context.fillStyle = 'lime';
+        } else{
+            rect2Width = (currentTime - this.lastShotTime) / 10;
+            this.context.fillStyle = 'yellow';
+        }
+        this.context.fillRect(rectX, rectY, rect2Width, rectHeight);    
     }
 
     handleKeyDown(event) {
@@ -259,7 +274,6 @@ export class Game {
             if (coin.rect.collide(this.player.rect)) {
                 this.coins.splice(i, 1);
                 this.money += 1;
-                console.log(this.money);
                 break;
             }
         }
@@ -298,6 +312,7 @@ export class Game {
         this.coins.forEach(coin => coin.draw(this.context));
         this.displayScore();
         this.displayMoney();
+        this.ShootCooldownIndicator();
     }
 
     gameLoop() {
