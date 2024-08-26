@@ -182,7 +182,7 @@ export class Game {
 
     spawnEnemies() {
         if (this.enemies.length == 0) {
-            this.enemies.push(new Enemy(900, 200, 50, 50, 'red'));
+            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -55, 50, 50, 'red'));
             console.log("Ligma");
         }
     }
