@@ -178,7 +178,14 @@ export class Game {
     }
 
     update() {
+        this.environmentEntities.forEach(entity => {
+            if (entity instanceof Ground) {
+                entity.update(this.canvas.width, this.canvas.width)
+            }
+        });
+
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
+       
         this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
            
         this.enemies.forEach(enemy => {
