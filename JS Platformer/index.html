@@ -9,5 +9,10 @@
 <body>
     <canvas id="gameCanvas"></canvas>
     <script type="module" src="main.js"></script>
+    <script>
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault(); // Prevent the default context menu from appearing
+        });
+    </script>
 </body>
 </html>

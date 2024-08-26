@@ -39,7 +39,7 @@ export class PhysicsBody {
                 this.vel.x = 0;
                 // console.log("Left");
             } else if (this.pos.x >= rect.pos.x + rect.width) {
-                this.pos.x == rect.pos.x + rect.width
+                this.pos.x = rect.pos.x + rect.width
                 this.vel.x = 0;
                 // console.log("Right");
             }

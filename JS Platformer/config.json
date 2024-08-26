@@ -4,5 +4,8 @@
     "playerHeight": 50,
     "playerSpeed": 7,
     "playerColor": "blue",
-    "jumpPower": 15
+    "jumpPower": 15,
+    "enemyWidth": 50,
+    "enemyHeight": 50
+
 }

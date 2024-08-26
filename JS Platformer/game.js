@@ -6,6 +6,7 @@ import { Vec2D } from './vec2D.js';
 import { Platform } from './platform.js';
 import { Enemy } from './enemy.js';
 import { Bullet } from './bullet.js';
+import { Coin } from './coin.js';
 
 
 export class Game {
@@ -57,7 +58,10 @@ export class Game {
 
             this.enemies = [];
 
+            this.coins = [];
+
             this.score = 0;
+            this.money = 0;
 
             this.initKeys();
             this.setupEventListeners();
@@ -166,7 +170,7 @@ export class Game {
                     this.enemies.splice(j, 1);
                     this.bullets.splice(i, 1);
                     this.score += 5;
-        
+                    this.coins.push(new Coin(enemy.pos.x + this.enemyWidth / 2, enemy.pos.y + this.enemyHeight / 2, 10, 'yellow'));
                     // Break out of the inner loop since the bullet has already been removed
                     break;
                 }
@@ -210,10 +214,16 @@ export class Game {
         this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
     }
 
+    displayMoney() {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "black";
+        let text = "Money: $" + this.money;
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 80);
+    }
+
     spawnEnemies() {
         if (this.enemies.length == 0) {
-            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -55, 50, 50, 'red'));
-            console.log("Ligma");
+            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -55, this.enemyWidth, this.enemyHeight, 'red'));
         }
     }
 
@@ -227,6 +237,18 @@ export class Game {
 
     getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    playerCoinCollisions() {
+        for (let i = this.coins.length - 1; i >= 0; i--) {
+            let coin = this.coins[i];
+            if (coin.rect.collide(this.player.rect)) {
+                this.coins.splice(i, 1);
+                this.money += 1;
+                console.log(this.money);
+                break;
+            }
+        }
     }
 
     update() {
@@ -248,8 +270,9 @@ export class Game {
         this.bulletEnemyCollisions();
         this.bulletEnvironmentCollisions();
 
+        this.playerCoinCollisions();
+
         this.spawnEnemies();
-        console.log(this.test);
     }
 
     draw() {
@@ -257,8 +280,10 @@ export class Game {
         this.player.draw(this.context);
         this.enemies.forEach(enemy => enemy.draw(this.context));
         this.environmentEntities.forEach(obj => obj.draw(this.context));
-        this.bullets.forEach(obj => obj.draw(this.context));
+        this.bullets.forEach(bullet => bullet.draw(this.context));
+        this.coins.forEach(coin => coin.draw(this.context));
         this.displayScore();
+        this.displayMoney();
     }
 
     gameLoop() {
