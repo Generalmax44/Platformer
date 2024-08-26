@@ -68,9 +68,5 @@ export class player extends PhysicsBody {
         if (this.pos.x <= 0) {
             this.pos.x = 0;
         }
-
-        // if (this.pos.y <= 0) {
-        //     this.pos.y = 0;
-        // }
     }
 }

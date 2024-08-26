@@ -90,7 +90,7 @@ export class Game {
             this.player.jump();
         }
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
-        this.enemy.update(this.collisionEntities)
+        this.enemy.update(this.canvas.width, this.canvas.height, this.collisionEntities, this.player.pos)
         if (this.player.rect.collide(this.enemy.rect)) {
             console.log("Ligmna")
         }
