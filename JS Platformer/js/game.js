@@ -101,12 +101,17 @@ export class Game {
     }
 
     click (event) {
-        const currentTime = performance.now();
-        // Check if enough time has passed since the last shot
-        if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
-            this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
-          this.lastShotTime = currentTime; // Update the last shot time
-        } 
+        if (this.button.active) {
+            console.log("click");
+            
+        } else{
+            const currentTime = performance.now();
+            // Check if enough time has passed since the last shot
+            if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
+                this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
+              this.lastShotTime = currentTime; // Update the last shot time
+            } 
+        }
     }
 
     ShootCooldownIndicator () {
