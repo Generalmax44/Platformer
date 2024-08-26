@@ -7,7 +7,7 @@ export class Enemy extends PhysicsBody {
     constructor(x, y, width, height, color) {
         super(x, y, width, height, color)
         
-        this.gravity = .5
+        this.gravity = .7
 
         this.vel = new Vec2D(0, 0)
         this.acc = new Vec2D(0, 0)

@@ -8,7 +8,7 @@ export class player extends PhysicsBody {
         
         this.speed = speed;
 
-        this.gravity = .5
+        this.gravity = .7
         this.jumpPower = 15
 
         this.vel = new Vec2D(0, 0)

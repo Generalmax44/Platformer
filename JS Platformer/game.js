@@ -25,7 +25,7 @@ export class Game {
         };
 
         this.groundSize = 50
-        this.player = new player(20, 20, 50, 50, 'blue', 5);
+        this.player = new player(20, 20, 50, 50, 'blue', 7);
         this.enemy = new Enemy (900, 200, 50, 50, 'red')
         // this.bullet = new Bullet(100, 100, 50, 'red')
 
@@ -48,8 +48,8 @@ export class Game {
         window.addEventListener('click', (event) => this.click(event));
     }
     click (event) {
-        console.log(event.clientX, event.clientY)
-        this.bullets.push(new Bullet(event.clientX, event.clientY, 5, 'purple'));
+        // console.log(event.clientX, event.clientY)
+        this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), new Vec2D(event.clientX, event.clientY), 5, 'purple'));
     }
 
     handleKeyDown(event) {
@@ -125,7 +125,7 @@ export class Game {
             console.log("Ligmna")
         }
 
-        // console.log(this.bullets.length);
+        this.bullets.forEach(obj => obj.update());
     }
 
     draw() {
