@@ -7,6 +7,7 @@ export class Rect {
     update(pos) {
         this.pos = pos;
     }
+
     draw (context, color) {
         context.fillStyle = color;
         context.fillRect(this.pos.x, this.pos.y, this.width, this.height);
@@ -15,8 +16,7 @@ export class Rect {
         if (this.pos.y + this.height > rect.pos.y && this.pos.y < rect.pos.y + rect.height) {
             if (this.pos.x + this.width > rect.pos.x && this.pos.x < rect.pos.x + rect.width) {
                 return true;
-            }
-        
+            }        
         }
     }
 }

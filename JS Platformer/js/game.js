@@ -7,6 +7,7 @@ import { Platform } from './classes/platform.js';
 import { Enemy } from './classes/enemy.js';
 import { Bullet } from './classes/bullet.js';
 import { Coin } from './classes/coin.js';
+import { Button } from './classes/button.js';
 
 
 export class Game {
@@ -63,10 +64,12 @@ export class Game {
             this.score = 0;
             this.money = 0;
 
-            this.lastShotTime = 0; // Initialize last shot time
-            this.shootCooldown = 1000; // Cooldown period in milliseconds (1 second)
+            this.shootCooldown = 1000; 
+            this.lastShotTime = -this.shootCooldown; // Initialize last shot time
 
             this.alive = true;
+
+            this.button = new Button(20, 20, 100, 100, 'pink', 'purple') 
 
             this.initKeys();
             this.setupEventListeners();
@@ -81,6 +84,7 @@ export class Game {
         window.addEventListener('keyup', (event) => this.handleKeyUp(event));
         window.addEventListener('click', (event) => this.click(event));
         window.addEventListener('blur', () => this.initKeys());
+        window.addEventListener('mousemove', (event) => this.button.update(event.clientX, event.clientY));
     }
 
     initKeys () {
@@ -104,6 +108,7 @@ export class Game {
           this.lastShotTime = currentTime; // Update the last shot time
         } 
     }
+
     ShootCooldownIndicator () {
         const rect1Width = 100;
         const rectHeight = 20;
@@ -330,6 +335,7 @@ export class Game {
         if (!this.alive) {
             this.displayGameOver();
         }
+        this.button.draw(this.context)
     }
 
     gameLoop() {
