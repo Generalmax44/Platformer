@@ -13,16 +13,7 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
-        this.keys = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            space: false,
-            a: false,
-            d: false,
-            w: false
-        };
+        this.initKeys();
 
         this.groundSize = 50
         this.player = new player(20, 20, 50, 50, 'blue', 7);
@@ -36,6 +27,10 @@ export class Game {
 
         this.bullets = [];
 
+        this.enemies = [
+            new Enemy (900, 200, 50, 50, 'red')
+        ];
+
         this.setupEventListeners();
         this.resizeCanvas();
         this.gameLoop();
@@ -46,7 +41,22 @@ export class Game {
         window.addEventListener('keydown', (event) => this.handleKeyDown(event));
         window.addEventListener('keyup', (event) => this.handleKeyUp(event));
         window.addEventListener('click', (event) => this.click(event));
+        window.addEventListener('blur', () => this.initKeys());
     }
+
+    initKeys () {
+        this.keys = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            space: false,
+            a: false,
+            d: false,
+            w: false
+        };
+    }
+
     click (event) {
         this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), new Vec2D(event.clientX, event.clientY), 5, 'black'));
     }
@@ -119,24 +129,28 @@ export class Game {
             this.player.jump();
         }
         this.player.update(this.keys, this.canvas.width, this.canvas.height, this.collisionEntities);
-        this.enemy.update(this.canvas.width, this.canvas.height, this.collisionEntities, this.player.pos)
+        this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.collisionEntities, this.player.pos));
+               
         if (this.player.rect.collide(this.enemy.rect)) {
-            console.log("Ligmna")
+            console.log("die")
         }
 
-        this.bullets.forEach(obj => obj.update());
+        this.bullets.forEach(bullet => bullet.update());
 
-        this.bullets.forEach(obj => {
-            if (obj.rect.collide(this.enemy.rect)) {
-                console.log("collidsion");
-            }
+        this.bullets.forEach(bullet => {
+            this.enemies.forEach(enemy => {
+                if (bullet.rect.collide(enemy.rect)) {
+                    console.log("Sugma Ballz")
+                }
+            });
         });
     }
 
     draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.player.draw(this.context);
-        this.enemy.draw(this.context);
+        this.enemies.forEach(enemy => enemy.draw(this.context));
+        // this.enemy.draw(this.context);
         this.collisionEntities.forEach(obj => obj.draw(this.context));
         this.bullets.forEach(obj => obj.draw(this.context));
         // this.bullet.draw(this.context);
