@@ -6,6 +6,7 @@
     "playerColor": "blue",
     "jumpPower": 15,
     "enemyWidth": 50,
-    "enemyHeight": 50
+    "enemyHeight": 50,
+    "enemySpeed": 2
 
 }

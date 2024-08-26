@@ -4,7 +4,7 @@ import { Rect } from "./rect.js";
 import { Vec2D } from "./vec2D.js";
 
 export class Enemy extends PhysicsBody {
-    constructor(x, y, width, height, color) {
+    constructor(x, y, width, height, color, speed) {
         super(x, y, width, height, color)
         
         this.gravity = .7
@@ -13,7 +13,7 @@ export class Enemy extends PhysicsBody {
         this.acc = new Vec2D(0, 0)
 
         this.direction = 1
-        this.speed = 2
+        this.speed = speed
     }
 
     update(canvasWidth, canvasHeight, rects, playerPos) {
