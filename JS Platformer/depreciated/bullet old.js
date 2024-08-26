@@ -1,5 +1,5 @@
-import { Vec2D } from "./vec2D.js";
-import { Rect } from "./rect.js";
+import { Vec2D } from "./vec2D.js.js";
+import { Rect } from "./rect.js.js";
 
 export class Bullet {
     constructor(x, y, radius, color, target) {

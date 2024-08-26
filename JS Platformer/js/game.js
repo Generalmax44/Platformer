@@ -1,12 +1,12 @@
-import { PhysicsBody } from './physicsBody.js';
-import { player } from './player.js';
-import { Ground } from './ground.js';
-import { Rect } from './rect.js';
-import { Vec2D } from './vec2D.js';
-import { Platform } from './platform.js';
-import { Enemy } from './enemy.js';
-import { Bullet } from './bullet.js';
-import { Coin } from './coin.js';
+import { PhysicsBody } from './classes/physicsBody.js';
+import { player } from './classes/player.js';
+import { Ground } from './classes/ground.js';
+import { Rect } from './classes/rect.js';
+import { Vec2D } from './classes/vec2D.js';
+import { Platform } from './classes/platform.js';
+import { Enemy } from './classes/enemy.js';
+import { Bullet } from './classes/bullet.js';
+import { Coin } from './classes/coin.js';
 
 
 export class Game {
@@ -14,7 +14,7 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
-        this.filePath = './config.json'; // Store the path for later use
+        this.filePath = 'js/config.json'; // Store the path for later use
         this.dataLoaded = false;
         this.loadData().then(() => {
             this.dataLoaded = true; // Mark data as loaded
