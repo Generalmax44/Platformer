@@ -13,8 +13,6 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
- 
-
         this.groundSize = 50
 
         this.player = new player(20, 20, 50, 50, 'blue', 7);
@@ -29,6 +27,8 @@ export class Game {
         this.enemies = [
             new Enemy (900, 200, 50, 50, 'red')
         ];
+
+        this.score = 0;
 
         this.initKeys();
         this.setupEventListeners();
@@ -135,7 +135,7 @@ export class Game {
                     // Remove enemy and bullet from their respective arrays
                     this.enemies.splice(j, 1);
                     this.bullets.splice(i, 1);
-                    console.log("Sugma Ballz");
+                    this.score += 5;
         
                     // Break out of the inner loop since the bullet has already been removed
                     break;
@@ -177,6 +177,13 @@ export class Game {
         }
     }
 
+    displayScore() {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "black";
+        let text = "Score: " + this.score;
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
+    }
+
     update() {
         this.environmentEntities.forEach(entity => {
             if (entity instanceof Ground) {
@@ -208,6 +215,7 @@ export class Game {
         this.enemies.forEach(enemy => enemy.draw(this.context));
         this.environmentEntities.forEach(obj => obj.draw(this.context));
         this.bullets.forEach(obj => obj.draw(this.context));
+        this.displayScore();
     }
 
     gameLoop() {
