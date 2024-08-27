@@ -49,6 +49,8 @@ export class Game {
             this.setupEventListeners();
             this.resizeCanvas();
 
+            this.initializeGameVariables();
+
             this.gameState = "play";
             this.playPreFlight();
 
@@ -138,7 +140,7 @@ export class Game {
         }
 
         if (this.gameState == 'shop') {
-            console.log("shop")
+            console.log(this.shootCooldown);
         }
     }
 
@@ -163,7 +165,14 @@ export class Game {
     }
 
 //////////////////////////////////// PreFlight Functions ////////////////////////////////////
-    
+
+    initializeGameVariables() {
+        this.score = 0;
+        this.money = 100;
+
+        this.shootCooldown = 1000; 
+    }
+
     playPreFlight() {
         this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
 
@@ -183,10 +192,6 @@ export class Game {
 
         this.coins = [];
 
-        this.score = 0;
-        this.money = 100;
-
-        this.shootCooldown = 1000; 
         this.lastShotTime = -this.shootCooldown; // Initialize last shot time
 
         this.alive = false;
