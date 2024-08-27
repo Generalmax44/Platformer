@@ -246,13 +246,13 @@ export class Game {
     }
 
     updateButtonLocation() {
-        this.playAgainButton.pos.x = this.canvas.width / 2 - 120;
-        this.ShopButton.pos.x = this.canvas.width / 2 + 20;
+        this.gameOverButtons[0].pos.x = this.canvas.width / 2 - 120;
+        this.gameOverButtons[1].pos.x = this.canvas.width / 2 + 20;
     }
 
 //////////////////////////////////// Event Functions ////////////////////////////////////
    
-    click (event) {
+    click () {
         if (this.gameState == 'play') {
             if (this.alive) {
                 let active = false;
@@ -266,8 +266,6 @@ export class Game {
                 if (!active) {
                     this.fireBullet();
                 }
-    
-       
     
             } else if (!this.alive) {
                 this.gameOverButtons.forEach(button => {
