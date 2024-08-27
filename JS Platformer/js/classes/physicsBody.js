@@ -10,8 +10,8 @@ export class PhysicsBody {
 
         this.rect = new Rect(this.pos, this.width, this.height);
     }
-    update(rects) {
-        this.applyGravity();
+    update(rects, gravity) {
+        this.applyGravity(gravity);
 
         rects.forEach(rect => this.testCollisions(rect));
 
@@ -23,8 +23,8 @@ export class PhysicsBody {
     }
 
 
-    applyGravity () {
-        this.acc.y = this.gravity;
+    applyGravity (gravity) {
+        this.acc.y = gravity;
         this.vel.add(this.acc);
         this.vel.y =  Math.round(this.vel.y * 10) / 10;
     }

@@ -122,9 +122,9 @@ export class Game {
             this.updateGround();
             if (this.alive) {
     
-                this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
+                this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities, this.gravity);
             
-                this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
+                this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.gravity));
                 
                 this.playerEnemyCollisions();
     

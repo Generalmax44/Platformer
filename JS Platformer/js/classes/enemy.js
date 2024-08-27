@@ -7,7 +7,6 @@ export class Enemy extends PhysicsBody {
     constructor(x, y, width, height, color, speed) {
         super(x, y, width, height, color)
         
-        this.gravity = .7
 
         this.vel = new Vec2D(0, 0)
         this.acc = new Vec2D(0, 0)
@@ -16,11 +15,11 @@ export class Enemy extends PhysicsBody {
         this.speed = speed
     }
 
-    update(canvasWidth, canvasHeight, rects, playerPos) {
+    update(canvasWidth, canvasHeight, rects, gravity) {
         this.updateVel();
         // this.aI(playerPos);
 
-        super.update(rects);
+        super.update(rects, gravity);
         this.checkBoundaries(canvasWidth, canvasHeight);
         // console.log(this.direction);
     }

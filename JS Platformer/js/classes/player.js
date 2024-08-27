@@ -8,7 +8,6 @@ export class player extends PhysicsBody {
         
         this.speed = speed;
 
-        this.gravity = .7;
         this.jumpPower = jumpPower;
 
         this.vel = new Vec2D(0, 0);
@@ -17,7 +16,7 @@ export class player extends PhysicsBody {
         this.canJump = false;
     }
 
-    update(keys, canvasWidth, canvasHeight, rects) {
+    update(keys, canvasWidth, canvasHeight, rects, gravity) {
         if (keys.space || keys.w || keys.up) {
             this.jump();
         }
@@ -27,7 +26,7 @@ export class player extends PhysicsBody {
         // this.vel.y *= this.speed;
 
 
-        super.update(rects);
+        super.update(rects, gravity);
 
         this.checkBoundaries(canvasWidth, canvasHeight);
 
