@@ -202,47 +202,49 @@ export class Game {
         this.alive = false;
 
         this.gameButtons = [
-            this.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade),
+            new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
             // new Button(400, 400, 100, 100, 'grey', 'red') 
         ];
 
         this.gameOverButtons = [
-            this.playAgainButton = new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'green', 'lime', "Again", 24, 35, this.playAgain),
-            this.ShopButton = new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 25, 35, this.shopPreFlight)
+            new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'green', 'lime', "Again", 24, 35, this.playAgain.bind(this)),
+            new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 25, 35, this.shopPreFlight.bind(this))
         ]
     }
 
-    shopPreFlight(game) {
-        game.gameState = "shop";
+    shopPreFlight() {
+        this.gameState = "shop";
 
-        game.shopButtons = [
-            game.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, game.fireRateUpgrade)
+        this.shopButtons = [
+            new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
+            // new Button(100, 100, 100, 60, 'lime', 'green', "Play", 12, 35, game.playPreFlight)
+            // game.playButton = 
             // new Button(400, 400, 100, 100, 'grey', 'red') 
         ];
     }
 
 //////////////////////////////////// Button Functions ////////////////////////////////////
     
-    fireRateUpgrade(game) {
+    fireRateUpgrade() {
         console.log("CLick")
-        if (game.shootCooldown != 100) {
-            console.log(game.money);
-            if (game.money >= 5) {
-                game.money -= 5;
-                game.shootCooldown -= 100;
-                console.log(game.shootCooldown)
+        if (this.shootCooldown != 100) {
+            console.log(this.money);
+            if (this.money >= 5) {
+                this.money -= 5;
+                this.shootCooldown -= 100;
+                console.log(this.shootCooldown)
             }
         }
     }
 
-    playAgain(game) {
-        game.enemies = [];
-        game.bullets = [];
-        game.coins = [];
-        game.player.pos.x = 20;
-        game.player.pos.y = 20;
-        game.score = 0;
-        game.alive = true;
+    playAgain() {
+        this.enemies = [];
+        this.bullets = [];
+        this.coins = [];
+        this.player.pos.x = 20;
+        this.player.pos.y = 20;
+        this.score = 0;
+        this.alive = true;
     }
 
     updateButtonLocation() {
@@ -258,8 +260,8 @@ export class Game {
                 let active = false;
                 this.gameButtons.forEach(button => {
                     if (button.active) {
-                        button.func(this); 
-                        // active = true;
+                        button.func(); 
+                        active = true;
                     } 
                 });
                 
