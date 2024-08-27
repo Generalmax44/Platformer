@@ -49,7 +49,7 @@ export class Game {
             this.setupEventListeners();
             this.resizeCanvas();
 
-            this.gameState = "Play";
+            this.gameState = "play";
             this.playPreFlight();
 
             this.gameLoop();
@@ -70,7 +70,10 @@ export class Game {
     }    
 
     setupEventListeners() {
-            window.addEventListener('resize', () => this.resizeCanvas());
+            window.addEventListener('resize', () => {
+                this.resizeCanvas();
+                this.updateButtonLocation();
+            });
             window.addEventListener('keydown', (event) => this.handleKeyDown(event));
             window.addEventListener('keyup', (event) => this.handleKeyUp(event));
             window.addEventListener('click', (event) => this.click(event));
@@ -104,51 +107,59 @@ export class Game {
 //////////////////////////////////// Game Loop ////////////////////////////////////
 
     gameLoop() {
-        if (this.alive) {
-            this.update();
-        }
+        this.update();
         this.draw();
         requestAnimationFrame(() => this.gameLoop());
     }
 
     update() {
-        this.updateGround();
+        if (this.gameState == 'play') {
+            this.updateGround();
+            if (this.alive) {
+    
+                this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
+            
+                this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
+                
+                this.playerEnemyCollisions();
+    
+                this.bullets.forEach(bullet => bullet.update());
+    
+                this.bulletCleanUp();
+    
+                this.bulletEnemyCollisions();
+    
+                this.bulletEnvironmentCollisions();
+    
+                this.playerCoinCollisions();
+    
+                this.spawnEnemies();
+            }
+        }
 
-        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
-       
-        this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
-           
-        this.playerEnemyCollisions();
-
-        this.bullets.forEach(bullet => bullet.update());
-
-        this.bulletCleanUp();
-
-        this.bulletEnemyCollisions();
-
-        this.bulletEnvironmentCollisions();
-
-        this.playerCoinCollisions();
-
-        this.spawnEnemies();
+        if (this.gameState == 'shop') {
+            console.log("shop")
+        }
     }
 
     draw() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.player.draw(this.context);
-        this.enemies.forEach(enemy => enemy.draw(this.context));
-        this.environmentEntities.forEach(obj => obj.draw(this.context));
-        this.bullets.forEach(bullet => bullet.draw(this.context));
-        this.coins.forEach(coin => coin.draw(this.context));
-        this.displayScore();
-        this.displayMoney();
-        if (!this.alive) {
-            this.displayGameOver();
-            this.gameOverButtons.forEach(button => button.draw(this.context));
-        } else {
-            this.gameButtons.forEach(button => button.draw(this.context));
-            this.ShootCooldownIndicator();
-        }        
+        if (this.gameState == "play") {
+            this.player.draw(this.context);
+            this.enemies.forEach(enemy => enemy.draw(this.context));
+            this.environmentEntities.forEach(obj => obj.draw(this.context));
+            this.bullets.forEach(bullet => bullet.draw(this.context));
+            this.coins.forEach(coin => coin.draw(this.context));
+            this.displayScore();
+            this.displayMoney();
+            if (!this.alive) {
+                this.displayGameOver();
+                this.gameOverButtons.forEach(button => button.draw(this.context));
+            } else {
+                this.gameButtons.forEach(button => button.draw(this.context));
+                this.ShootCooldownIndicator();
+            }      
+        }    
     }
 
 //////////////////////////////////// PreFlight Functions ////////////////////////////////////
@@ -191,8 +202,8 @@ export class Game {
         ]
     }
 
-    menuPreFlight() {
-        console.log("Shop");
+    menuPreFlight(game) {
+        game.gameState = "shop"
     }
 
 //////////////////////////////////// Button Functions ////////////////////////////////////
@@ -217,6 +228,11 @@ export class Game {
         game.player.pos.y = 20;
         game.score = 0;
         game.alive = true;
+    }
+
+    updateButtonLocation() {
+        this.playAgainButton.pos.x = this.canvas.width / 2 - 120;
+        this.ShopButton.pos.x = this.canvas.width / 2 + 20;
     }
 
 //////////////////////////////////// Event Functions ////////////////////////////////////
