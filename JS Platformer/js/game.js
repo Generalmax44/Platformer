@@ -357,7 +357,7 @@ export class Game {
         const currentTime = performance.now();
             // Check if enough time has passed since the last shot
             if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
-                this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
+                this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY), this.bulletSpeed));
               this.lastShotTime = currentTime; // Update the last shot time
             } 
     }
@@ -378,7 +378,7 @@ export class Game {
 
     spawnEnemies() {
         if (this.enemies.length == 0) {
-            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -55, this.enemyWidth, this.enemyHeight, 'red', this.enemySpeed));
+            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -this.enemyHeight - 5, this.enemyWidth, this.enemyHeight, this.enemyColor, this.enemySpeed));
         }
     }
 

@@ -8,6 +8,8 @@
     "enemyWidth": 50,
     "enemyHeight": 50,
     "enemySpeed": 2,
-    "gravity": 0.7
+    "enemyColor": "red",
+    "gravity": 0.7,
+    "bulletSpeed": 10
 
 }

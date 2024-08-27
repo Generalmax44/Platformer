@@ -3,10 +3,10 @@ import { Rect } from "./rect.js";
 import { Circle } from "./circle.js";
 
 export class Bullet extends Circle {
-    constructor(x, y, radius, color, target) {
+    constructor(x, y, radius, color, target, speed) {
         super(x, y, radius, color);
 
-        this.speed = 8
+        this.speed = speed
 
         this.vel = new Vec2D(0, 0)
 
