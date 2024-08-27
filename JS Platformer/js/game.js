@@ -38,7 +38,7 @@ export class Game {
         } catch (error) {
           console.error('Error fetching JSON data:', error);
         }
-      }
+    }
 
 //////////////////////////////////// Initialize Functions ////////////////////////////////////
 
@@ -76,17 +76,24 @@ export class Game {
             window.addEventListener('click', (event) => this.click(event));
             window.addEventListener('blur', () => this.initKeys());
             window.addEventListener('mousemove', (event) => {
-                if (this.alive) {
-                    this.gameButtons.forEach(button => {
-                        button.update(event.clientX, event.clientY);
-                    });
-                } else {
-                    this.gameOverButtons.forEach(button => {
-                        button.update(event.clientX, event.clientY);
-                    });
-                }
+                this.gameButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            
+                this.gameOverButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
             });
-                
+            //     if (this.alive) {
+            //         this.gameButtons.forEach(button => {
+            //             button.update(event.clientX, event.clientY);
+            //         });
+            //     } else {
+            //         this.gameOverButtons.forEach(button => {
+            //             button.update(event.clientX, event.clientY);
+            //         });
+            //     }
+            // });
     }
 
     resizeCanvas() {
@@ -166,12 +173,12 @@ export class Game {
         this.coins = [];
 
         this.score = 0;
-        this.money = 0;
+        this.money = 100;
 
         this.shootCooldown = 1000; 
         this.lastShotTime = -this.shootCooldown; // Initialize last shot time
 
-        this.alive = true;
+        this.alive = false;
 
         this.gameButtons = [
             this.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade),
@@ -179,8 +186,13 @@ export class Game {
         ];
 
         this.gameOverButtons = [
-            this.playerAgainButton = new Button(700, 700, 100, 60, 'lime', 'green', "Again", 12, 35, this.playAgain),
+            this.playAgainButton = new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'green', 'lime', "Again", 24, 35, this.playAgain),
+            this.ShopButton = new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 25, 35, this.menuPreFlight)
         ]
+    }
+
+    menuPreFlight() {
+        console.log("Shop");
     }
 
 //////////////////////////////////// Button Functions ////////////////////////////////////
@@ -377,6 +389,7 @@ export class Game {
         this.enemies.forEach(enemy => {
             if (enemy.rect.collide(this.player.rect)) {
                 this.alive = false;
+                console.log(this.playAgainButton.active);
                 console.log("Die");
             }
         });
