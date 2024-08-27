@@ -69,10 +69,15 @@ export class Game {
 
             this.alive = true;
 
-            this.buttons = [
+            this.gameButtons = [
                 this.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade),
                 // new Button(400, 400, 100, 100, 'grey', 'red') 
             ];
+
+            this.gameOverButtons = [
+                this.playerAgainButton = new Button(700, 700, 100, 60, 'lime', 'green', "Again", 12, 35, this.fireRateUpgrade),
+            ]
+
             this.initKeys();
             this.setupEventListeners();
             this.resizeCanvas();
@@ -86,7 +91,7 @@ export class Game {
         window.addEventListener('keyup', (event) => this.handleKeyUp(event));
         window.addEventListener('click', (event) => this.click(event));
         window.addEventListener('blur', () => this.initKeys());
-        window.addEventListener('mousemove', (event) => this.buttons.forEach(button => {
+        window.addEventListener('mousemove', (event) => this.gameButtons.forEach(button => {
             button.update(event.clientX, event.clientY);
         }));
             
@@ -106,30 +111,34 @@ export class Game {
     }
 
     fireRateUpgrade(game) {
+        // console.log("CLick")
         if (game.shootCooldown != 100) {
-            game.shootCooldown -= 100;
-            console.log(game.shootCooldown)
+            console.log(game.money);
+            if (game.money >= 5) {
+                game.money -= 5;
+                game.shootCooldown -= 100;
+                console.log(game.shootCooldown)
+            }
         }
     }
 
     click (event) {
-        this.buttons.forEach(button => {
+        this.gameButtons.forEach(button => {
             if (button.active) {
                 button.func(this); 
+            } else {
+                this.fireBullet();
             }
         });
-            
-        if (this.upgradeButton.active) {
-            
+    }
 
-        } else{
-            const currentTime = performance.now();
+    fireBullet() {
+        const currentTime = performance.now();
             // Check if enough time has passed since the last shot
             if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
                 this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
               this.lastShotTime = currentTime; // Update the last shot time
             } 
-        }
     }
 
     ShootCooldownIndicator () {
@@ -319,10 +328,10 @@ export class Game {
     }
 
     displayGameOver() {
-        this.context.font = "60px Arial";
+        this.context.font = "90px Arial";
         this.context.fillStyle = "red";
         let text = "GAME OVER"
-        this.context.fillText(text, 200, 200);
+        this.context.fillText(text, 440, 375);
     }
 
     update() {
@@ -357,9 +366,10 @@ export class Game {
         this.ShootCooldownIndicator();
         if (!this.alive) {
             this.displayGameOver();
-        }
-        this.buttons.forEach(button => button.draw(this.context));
-        // this.button.draw(this.context)
+            this.gameOverButtons.forEach(button => button.draw(this.context));
+        } else {
+            this.gameButtons.forEach(button => button.draw(this.context));
+        }        
     }
 
     gameLoop() {
