@@ -40,6 +40,8 @@ export class Game {
         }
       }
 
+//////////////////////////////////// Initialize Functions ////////////////////////////////////
+
     initialize() {
         if (this.dataLoaded) {
 
@@ -53,6 +55,46 @@ export class Game {
             this.gameLoop();
         }
     }
+
+    initKeys () {
+        this.keys = {
+            up: false,
+            down: false,
+            left: false,
+            right: false,
+            space: false,
+            a: false,
+            d: false,
+            w: false
+        };
+    }    
+
+    setupEventListeners() {
+            window.addEventListener('resize', () => this.resizeCanvas());
+            window.addEventListener('keydown', (event) => this.handleKeyDown(event));
+            window.addEventListener('keyup', (event) => this.handleKeyUp(event));
+            window.addEventListener('click', (event) => this.click(event));
+            window.addEventListener('blur', () => this.initKeys());
+            window.addEventListener('mousemove', (event) => {
+                if (this.alive) {
+                    this.gameButtons.forEach(button => {
+                        button.update(event.clientX, event.clientY);
+                    });
+                } else {
+                    this.gameOverButtons.forEach(button => {
+                        button.update(event.clientX, event.clientY);
+                    });
+                }
+            });
+                
+    }
+
+    resizeCanvas() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+//////////////////////////////////// Game Loop ////////////////////////////////////
 
     gameLoop() {
         if (this.alive) {
@@ -72,9 +114,11 @@ export class Game {
         this.playerEnemyCollisions();
 
         this.bullets.forEach(bullet => bullet.update());
+
         this.bulletCleanUp();
 
         this.bulletEnemyCollisions();
+
         this.bulletEnvironmentCollisions();
 
         this.playerCoinCollisions();
@@ -100,6 +144,8 @@ export class Game {
         }        
     }
 
+//////////////////////////////////// PreFlight Functions ////////////////////////////////////
+    
     playPreFlight() {
         this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
 
@@ -137,39 +183,8 @@ export class Game {
         ]
     }
 
-    setupEventListeners() {
-        window.addEventListener('resize', () => this.resizeCanvas());
-        window.addEventListener('keydown', (event) => this.handleKeyDown(event));
-        window.addEventListener('keyup', (event) => this.handleKeyUp(event));
-        window.addEventListener('click', (event) => this.click(event));
-        window.addEventListener('blur', () => this.initKeys());
-        window.addEventListener('mousemove', (event) => {
-            if (this.alive) {
-                this.gameButtons.forEach(button => {
-                    button.update(event.clientX, event.clientY);
-                });
-            } else {
-                this.gameOverButtons.forEach(button => {
-                    button.update(event.clientX, event.clientY);
-                });
-            }
-        });
-            
-    }
-
-    initKeys () {
-        this.keys = {
-            up: false,
-            down: false,
-            left: false,
-            right: false,
-            space: false,
-            a: false,
-            d: false,
-            w: false
-        };
-    }
-
+//////////////////////////////////// Button Functions ////////////////////////////////////
+    
     fireRateUpgrade(game) {
         // console.log("CLick")
         if (game.shootCooldown != 100) {
@@ -192,7 +207,8 @@ export class Game {
         game.alive = true;
     }
 
-    //////// Brokeen ////// must be fixed
+//////////////////////////////////// Event Functions ////////////////////////////////////
+   
     click (event) {
         if (this.alive) {
             let active = false;
@@ -216,37 +232,6 @@ export class Game {
                 }
             });
         } 
-    }
-
-    fireBullet() {
-        const currentTime = performance.now();
-            // Check if enough time has passed since the last shot
-            if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
-                this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
-              this.lastShotTime = currentTime; // Update the last shot time
-            } 
-    }
-
-    ShootCooldownIndicator () {
-        const rect1Width = 100;
-        const rectHeight = 20;
-        const rectX = this.canvas.width - rect1Width - 10; // 10px margin from the right
-        const rectY = this.canvas.height - rectHeight - 10; // 10px margin from the bottom
-
-        // Draw the rectangle
-        this.context.fillStyle = 'red'; // Rectangle color
-        this.context.fillRect(rectX, rectY, rect1Width, rectHeight);
-
-        const currentTime = performance.now();
-        let rect2Width = 0;
-        if (currentTime - this.lastShotTime >= this.shootCooldown) {
-            rect2Width = 100;
-            this.context.fillStyle = 'lime';
-        } else{
-            rect2Width = ((currentTime - this.lastShotTime) / this.shootCooldown) * 100;
-            this.context.fillStyle = 'yellow';
-        }
-        this.context.fillRect(rectX, rectY, rect2Width, rectHeight);    
     }
 
     handleKeyDown(event) {
@@ -307,10 +292,38 @@ export class Game {
         }
     }
 
-    resizeCanvas() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+//////////////////////////////////// Bullet Functions ////////////////////////////////////
+    
+    fireBullet() {
+        const currentTime = performance.now();
+            // Check if enough time has passed since the last shot
+            if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
+                this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY)));
+              this.lastShotTime = currentTime; // Update the last shot time
+            } 
     }
+
+    bulletCleanUp() {
+        for (let i = this.bullets.length - 1; i >= 0; i--) {
+            let bullet = this.bullets[i];
+            if (bullet.pos.x > this.canvas.width + 10 || bullet.pos.x < -10 || bullet.pos.y < -10) {
+                // Remove enemy and bullet from their respective arrays
+                this.bullets.splice(i, 1);
+                // Break out of the inner loop since the bullet has already been removed
+                break;
+            }
+        }
+    }
+
+//////////////////////////////////// Enemy Functions ////////////////////////////////////
+
+    spawnEnemies() {
+        if (this.enemies.length == 0) {
+            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -55, this.enemyWidth, this.enemyHeight, 'red', this.enemySpeed));
+        }
+    }
+
+//////////////////////////////////// Collision Detection Functions ////////////////////////////////////
 
     bulletEnemyCollisions() {
         for (let i = this.bullets.length - 1; i >= 0; i--) {
@@ -349,50 +362,6 @@ export class Game {
         }
     }
 
-    bulletCleanUp() {
-        for (let i = this.bullets.length - 1; i >= 0; i--) {
-            let bullet = this.bullets[i];
-            if (bullet.pos.x > this.canvas.width + 10 || bullet.pos.x < -10 || bullet.pos.y < -10) {
-                // Remove enemy and bullet from their respective arrays
-                this.bullets.splice(i, 1);
-                // Break out of the inner loop since the bullet has already been removed
-                break;
-            }
-        }
-    }
-
-    displayScore() {
-        this.context.font = "30px Arial";
-        this.context.fillStyle = "black";
-        let text = "Score: " + this.score;
-        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
-    }
-
-    displayMoney() {
-        this.context.font = "30px Arial";
-        this.context.fillStyle = "black";
-        let text = "Money: $" + this.money;
-        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 80);
-    }
-
-    spawnEnemies() {
-        if (this.enemies.length == 0) {
-            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -55, this.enemyWidth, this.enemyHeight, 'red', this.enemySpeed));
-        }
-    }
-
-    updateGround() {
-        this.environmentEntities.forEach(entity => {
-            if (entity instanceof Ground) {
-                entity.update(this.canvas.width, this.canvas.width);
-            }
-        });
-    }
-
-    getRandomInt(min, max) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
     playerCoinCollisions() {
         for (let i = this.coins.length - 1; i >= 0; i--) {
             let coin = this.coins[i];
@@ -413,6 +382,54 @@ export class Game {
         });
     }
 
+//////////////////////////////////// Auxillary Update Functions ////////////////////////////////////
+    
+    updateGround() {
+        this.environmentEntities.forEach(entity => {
+            if (entity instanceof Ground) {
+                entity.update(this.canvas.width, this.canvas.width);
+            }
+        });
+    }
+
+//////////////////////////////////// Auxillary Draw Functions ////////////////////////////////////
+
+    ShootCooldownIndicator () {
+        const rect1Width = 100;
+        const rectHeight = 20;
+        const rectX = this.canvas.width - rect1Width - 10; // 10px margin from the right
+        const rectY = this.canvas.height - rectHeight - 10; // 10px margin from the bottom
+
+        // Draw the rectangle
+        this.context.fillStyle = 'red'; // Rectangle color
+        this.context.fillRect(rectX, rectY, rect1Width, rectHeight);
+
+        const currentTime = performance.now();
+        let rect2Width = 0;
+        if (currentTime - this.lastShotTime >= this.shootCooldown) {
+            rect2Width = 100;
+            this.context.fillStyle = 'lime';
+        } else{
+            rect2Width = ((currentTime - this.lastShotTime) / this.shootCooldown) * 100;
+            this.context.fillStyle = 'yellow';
+        }
+        this.context.fillRect(rectX, rectY, rect2Width, rectHeight);    
+    }
+
+    displayScore() {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "black";
+        let text = "Score: " + this.score;
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
+    }
+
+    displayMoney() {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "black";
+        let text = "Money: $" + this.money;
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 80);
+    }
+
     displayGameOver() {
         this.context.font = "90px Arial";
         this.context.fillStyle = "red";
@@ -420,7 +437,10 @@ export class Game {
         this.context.fillText(text, 450, 375);
     }
 
+//////////////////////////////////// Auxillary Functions ////////////////////////////////////
 
-
+    getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 }
 
