@@ -15,7 +15,7 @@ export class Game {
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
-        this.filePath = 'js/config.json'; // Store the path for later use
+        this.configPath = 'js/config.json'; // Store the path for later use
         this.dataLoaded = false;
         this.loadData().then(() => {
             this.dataLoaded = true; // Mark data as loaded
@@ -25,7 +25,7 @@ export class Game {
 
     async loadData() {
         try {
-          const response = await fetch(this.filePath); // Fetch the JSON file
+          const response = await fetch(this.configPath); // Fetch the JSON file
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -43,46 +43,98 @@ export class Game {
     initialize() {
         if (this.dataLoaded) {
 
-            this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
-
-            this.environmentEntities = [
-                new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
-                new Platform(200, 100, 300, 20, 'orange'),
-                new Platform(400, 600, 300, 20, 'orange'),
-                new Platform(400, 350, 300, 20, 'orange'),
-                new Platform(120, 500, 300, 20, 'orange'),
-                new Platform(800, 300, 300, 20, 'orange'),
-                new Platform(1000, 600, 300, 20, 'orange')
-            ];
-
-            this.bullets = [];
-
-            this.enemies = [];
-
-            this.coins = [];
-
-            this.score = 0;
-            this.money = 0;
-
-            this.shootCooldown = 1000; 
-            this.lastShotTime = -this.shootCooldown; // Initialize last shot time
-
-            this.alive = true;
-
-            this.gameButtons = [
-                this.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade),
-                // new Button(400, 400, 100, 100, 'grey', 'red') 
-            ];
-
-            this.gameOverButtons = [
-                this.playerAgainButton = new Button(700, 700, 100, 60, 'lime', 'green', "Again", 12, 35, this.playAgain),
-            ]
-
             this.initKeys();
             this.setupEventListeners();
             this.resizeCanvas();
+
+            this.gameState = "Play";
+            this.playPreFlight();
+
             this.gameLoop();
         }
+    }
+
+    gameLoop() {
+        if (this.alive) {
+            this.update();
+        }
+        this.draw();
+        requestAnimationFrame(() => this.gameLoop());
+    }
+
+    update() {
+        this.updateGround();
+
+        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
+       
+        this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
+           
+        this.playerEnemyCollisions();
+
+        this.bullets.forEach(bullet => bullet.update());
+        this.bulletCleanUp();
+
+        this.bulletEnemyCollisions();
+        this.bulletEnvironmentCollisions();
+
+        this.playerCoinCollisions();
+
+        this.spawnEnemies();
+    }
+
+    draw() {
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.player.draw(this.context);
+        this.enemies.forEach(enemy => enemy.draw(this.context));
+        this.environmentEntities.forEach(obj => obj.draw(this.context));
+        this.bullets.forEach(bullet => bullet.draw(this.context));
+        this.coins.forEach(coin => coin.draw(this.context));
+        this.displayScore();
+        this.displayMoney();
+        if (!this.alive) {
+            this.displayGameOver();
+            this.gameOverButtons.forEach(button => button.draw(this.context));
+        } else {
+            this.gameButtons.forEach(button => button.draw(this.context));
+            this.ShootCooldownIndicator();
+        }        
+    }
+
+    playPreFlight() {
+        this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
+
+        this.environmentEntities = [
+            new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
+            new Platform(200, 100, 300, 20, 'orange'),
+            new Platform(400, 600, 300, 20, 'orange'),
+            new Platform(400, 350, 300, 20, 'orange'),
+            new Platform(120, 500, 300, 20, 'orange'),
+            new Platform(800, 300, 300, 20, 'orange'),
+            new Platform(1000, 600, 300, 20, 'orange')
+        ];
+
+        this.bullets = [];
+
+        this.enemies = [];
+
+        this.coins = [];
+
+        this.score = 0;
+        this.money = 0;
+
+        this.shootCooldown = 1000; 
+        this.lastShotTime = -this.shootCooldown; // Initialize last shot time
+
+        this.alive = true;
+
+        this.gameButtons = [
+            this.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade),
+            // new Button(400, 400, 100, 100, 'grey', 'red') 
+        ];
+
+        this.gameOverButtons = [
+            this.playerAgainButton = new Button(700, 700, 100, 60, 'lime', 'green', "Again", 12, 35, this.playAgain),
+        ]
     }
 
     setupEventListeners() {
@@ -133,6 +185,7 @@ export class Game {
     playAgain(game) {
         game.enemies = [];
         game.bullets = [];
+        game.coins = [];
         game.player.pos.x = 20;
         game.player.pos.y = 20;
         game.score = 0;
@@ -142,13 +195,20 @@ export class Game {
     //////// Brokeen ////// must be fixed
     click (event) {
         if (this.alive) {
+            let active = false;
             this.gameButtons.forEach(button => {
                 if (button.active) {
                     button.func(this); 
-                } else {
-                    this.fireBullet();
-                }
+                    active = true;
+                } 
             });
+            
+            if (!active) {
+                this.fireBullet();
+            }
+
+   
+
         } else if (!this.alive) {
             this.gameOverButtons.forEach(button => {
                 if (button.active) {
@@ -360,50 +420,7 @@ export class Game {
         this.context.fillText(text, 450, 375);
     }
 
-    update() {
-        this.updateGround();
 
-        this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities);
-       
-        this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.player.pos));
-           
-        this.playerEnemyCollisions();
 
-        this.bullets.forEach(bullet => bullet.update());
-        this.bulletCleanUp();
-
-        this.bulletEnemyCollisions();
-        this.bulletEnvironmentCollisions();
-
-        this.playerCoinCollisions();
-
-        this.spawnEnemies();
-    }
-
-    draw() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.player.draw(this.context);
-        this.enemies.forEach(enemy => enemy.draw(this.context));
-        this.environmentEntities.forEach(obj => obj.draw(this.context));
-        this.bullets.forEach(bullet => bullet.draw(this.context));
-        this.coins.forEach(coin => coin.draw(this.context));
-        this.displayScore();
-        this.displayMoney();
-        this.ShootCooldownIndicator();
-        if (!this.alive) {
-            this.displayGameOver();
-            this.gameOverButtons.forEach(button => button.draw(this.context));
-        } else {
-            this.gameButtons.forEach(button => button.draw(this.context));
-        }        
-    }
-
-    gameLoop() {
-        if (this.alive) {
-            this.update();
-        }
-        this.draw();
-        requestAnimationFrame(() => this.gameLoop());
-    }
 }
 
