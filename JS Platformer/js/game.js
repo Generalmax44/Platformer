@@ -106,6 +106,13 @@ export class Game {
         this.canvas.height = window.innerHeight;
     }
 
+    initializeGameVariables() {
+        this.score = 0;
+        this.money = 100;
+
+        this.shootCooldown = 1000; 
+    }
+
 //////////////////////////////////// Game Loop ////////////////////////////////////
 
     gameLoop() {
@@ -165,13 +172,6 @@ export class Game {
     }
 
 //////////////////////////////////// PreFlight Functions ////////////////////////////////////
-
-    initializeGameVariables() {
-        this.score = 0;
-        this.money = 100;
-
-        this.shootCooldown = 1000; 
-    }
 
     playPreFlight() {
         this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
