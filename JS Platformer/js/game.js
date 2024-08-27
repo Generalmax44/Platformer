@@ -217,9 +217,7 @@ export class Game {
 
         this.shopButtons = [
             new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
-            // new Button(100, 100, 100, 60, 'lime', 'green', "Play", 12, 35, game.playPreFlight)
-            // game.playButton = 
-            // new Button(400, 400, 100, 100, 'grey', 'red') 
+            new Button(100, 100, 100, 60, 'lime', 'green', "Play", 12, 35, this.playPreFlight.bind(this))
         ];
     }
 
