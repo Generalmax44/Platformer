@@ -2,12 +2,13 @@ import { Rect } from "./rect.js";
 import { Vec2D } from "./vec2D.js";
 
 export class Button {
-    constructor(x, y, w, h, inactiveColor, activeColor) {
+    constructor(x, y, w, h, inactiveColor, activeColor, func) {
         this.pos = new Vec2D(x, y);
         this.width = w;
         this.height = h;
         this.inactiveColor = inactiveColor;
         this.activeColor = activeColor;
+        this.func = func;
 
         this.active = false;
 

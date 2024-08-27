@@ -70,7 +70,7 @@ export class Game {
             this.alive = true;
 
             this.buttons = [
-                this.upgradeButton = new Button(20, 20, 100, 100, 'pink', 'purple'),
+                this.upgradeButton = new Button(20, 20, 100, 100, 'pink', 'purple', this.fireRateUpgrade),
                 // new Button(400, 400, 100, 100, 'grey', 'red') 
             ];
             this.initKeys();
@@ -105,9 +105,22 @@ export class Game {
         };
     }
 
+    fireRateUpgrade(game) {
+        if (game.shootCooldown != 100) {
+            game.shootCooldown -= 100;
+            console.log(game.shootCooldown)
+        }
+    }
+
     click (event) {
+        this.buttons.forEach(button => {
+            if (button.active) {
+                button.func(this); 
+            }
+        });
+            
         if (this.upgradeButton.active) {
-            this.shootCooldown -= 100;
+            
 
         } else{
             const currentTime = performance.now();
