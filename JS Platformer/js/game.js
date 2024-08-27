@@ -51,7 +51,6 @@ export class Game {
 
             this.initializeGameVariables();
 
-            this.gameState = "play";
             this.playPreFlight();
 
             this.gameLoop();
@@ -81,24 +80,22 @@ export class Game {
             window.addEventListener('click', (event) => this.click(event));
             window.addEventListener('blur', () => this.initKeys());
             window.addEventListener('mousemove', (event) => {
-                this.gameButtons.forEach(button => {
-                    button.update(event.clientX, event.clientY);
-                });
-            
-                this.gameOverButtons.forEach(button => {
-                    button.update(event.clientX, event.clientY);
-                });
+                if (this.gameState == 'play') {
+                    this.gameButtons.forEach(button => {
+                        button.update(event.clientX, event.clientY);
+                    });
+                
+                    this.gameOverButtons.forEach(button => {
+                        button.update(event.clientX, event.clientY);
+                    });
+                }
+
+                if (this.gameState == 'shop') {
+                    this.shopButtons.forEach(button => {
+                        button.update(event.clientX, event.clientY);
+                    });
+                }
             });
-            //     if (this.alive) {
-            //         this.gameButtons.forEach(button => {
-            //             button.update(event.clientX, event.clientY);
-            //         });
-            //     } else {
-            //         this.gameOverButtons.forEach(button => {
-            //             button.update(event.clientX, event.clientY);
-            //         });
-            //     }
-            // });
     }
 
     resizeCanvas() {
@@ -107,7 +104,6 @@ export class Game {
     }
 
     initializeGameVariables() {
-        this.score = 0;
         this.money = 100;
 
         this.shootCooldown = 1000; 
@@ -160,7 +156,7 @@ export class Game {
             this.bullets.forEach(bullet => bullet.draw(this.context));
             this.coins.forEach(coin => coin.draw(this.context));
             this.displayScore();
-            this.displayMoney();
+            this.displayMoney(80);
             if (!this.alive) {
                 this.displayGameOver();
                 this.gameOverButtons.forEach(button => button.draw(this.context));
@@ -168,12 +164,19 @@ export class Game {
                 this.gameButtons.forEach(button => button.draw(this.context));
                 this.ShootCooldownIndicator();
             }      
+        }
+
+        if (this.gameState == 'shop') {
+            this.shopButtons.forEach(button => button.draw(this.context));
+            this.displayMoney(40);
         }    
     }
 
 //////////////////////////////////// PreFlight Functions ////////////////////////////////////
 
     playPreFlight() {
+        this.gameState = "play";
+
         this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
 
         this.environmentEntities = [
@@ -192,6 +195,8 @@ export class Game {
 
         this.coins = [];
 
+        this.score = 0;
+
         this.lastShotTime = -this.shootCooldown; // Initialize last shot time
 
         this.alive = false;
@@ -203,18 +208,23 @@ export class Game {
 
         this.gameOverButtons = [
             this.playAgainButton = new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'green', 'lime', "Again", 24, 35, this.playAgain),
-            this.ShopButton = new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 25, 35, this.menuPreFlight)
+            this.ShopButton = new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 25, 35, this.shopPreFlight)
         ]
     }
 
-    menuPreFlight(game) {
-        game.gameState = "shop"
+    shopPreFlight(game) {
+        game.gameState = "shop";
+
+        game.shopButtons = [
+            game.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, game.fireRateUpgrade)
+            // new Button(400, 400, 100, 100, 'grey', 'red') 
+        ];
     }
 
 //////////////////////////////////// Button Functions ////////////////////////////////////
     
     fireRateUpgrade(game) {
-        // console.log("CLick")
+        console.log("CLick")
         if (game.shootCooldown != 100) {
             console.log(game.money);
             if (game.money >= 5) {
@@ -243,28 +253,40 @@ export class Game {
 //////////////////////////////////// Event Functions ////////////////////////////////////
    
     click (event) {
-        if (this.alive) {
-            let active = false;
-            this.gameButtons.forEach(button => {
+        if (this.gameState == 'play') {
+            if (this.alive) {
+                let active = false;
+                this.gameButtons.forEach(button => {
+                    if (button.active) {
+                        button.func(this); 
+                        // active = true;
+                    } 
+                });
+                
+                if (!active) {
+                    this.fireBullet();
+                }
+    
+       
+    
+            } else if (!this.alive) {
+                this.gameOverButtons.forEach(button => {
+                    if (button.active) {
+                        button.func(this); 
+                    }
+                });
+            } 
+        }
+
+        if (this.gameState == 'shop') {
+            this.shopButtons.forEach(button => {
                 if (button.active) {
+                    console.log(button)
                     button.func(this); 
-                    active = true;
                 } 
             });
-            
-            if (!active) {
-                this.fireBullet();
-            }
-
-   
-
-        } else if (!this.alive) {
-            this.gameOverButtons.forEach(button => {
-                if (button.active) {
-                    button.func(this); 
-                }
-            });
-        } 
+        }
+        
     }
 
     handleKeyDown(event) {
@@ -416,8 +438,7 @@ export class Game {
         this.enemies.forEach(enemy => {
             if (enemy.rect.collide(this.player.rect)) {
                 this.alive = false;
-                console.log(this.playAgainButton.active);
-                console.log("Die");
+                // console.log("Die");
             }
         });
     }
@@ -463,11 +484,11 @@ export class Game {
         this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
     }
 
-    displayMoney() {
+    displayMoney(x) {
         this.context.font = "30px Arial";
         this.context.fillStyle = "black";
         let text = "Money: $" + this.money;
-        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 80);
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, x);
     }
 
     displayGameOver() {
