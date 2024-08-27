@@ -75,7 +75,7 @@ export class Game {
             ];
 
             this.gameOverButtons = [
-                this.playerAgainButton = new Button(700, 700, 100, 60, 'lime', 'green', "Again", 12, 35, this.fireRateUpgrade),
+                this.playerAgainButton = new Button(700, 700, 100, 60, 'lime', 'green', "Again", 12, 35, this.playAgain),
             ]
 
             this.initKeys();
@@ -91,9 +91,17 @@ export class Game {
         window.addEventListener('keyup', (event) => this.handleKeyUp(event));
         window.addEventListener('click', (event) => this.click(event));
         window.addEventListener('blur', () => this.initKeys());
-        window.addEventListener('mousemove', (event) => this.gameButtons.forEach(button => {
-            button.update(event.clientX, event.clientY);
-        }));
+        window.addEventListener('mousemove', (event) => {
+            if (this.alive) {
+                this.gameButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            } else {
+                this.gameOverButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            }
+        });
             
     }
 
@@ -122,14 +130,32 @@ export class Game {
         }
     }
 
+    playAgain(game) {
+        game.enemies = [];
+        game.bullets = [];
+        game.player.pos.x = 20;
+        game.player.pos.y = 20;
+        game.score = 0;
+        game.alive = true;
+    }
+
+    //////// Brokeen ////// must be fixed
     click (event) {
-        this.gameButtons.forEach(button => {
-            if (button.active) {
-                button.func(this); 
-            } else {
-                this.fireBullet();
-            }
-        });
+        if (this.alive) {
+            this.gameButtons.forEach(button => {
+                if (button.active) {
+                    button.func(this); 
+                } else {
+                    this.fireBullet();
+                }
+            });
+        } else if (!this.alive) {
+            this.gameOverButtons.forEach(button => {
+                if (button.active) {
+                    button.func(this); 
+                }
+            });
+        } 
     }
 
     fireBullet() {
@@ -331,7 +357,7 @@ export class Game {
         this.context.font = "90px Arial";
         this.context.fillStyle = "red";
         let text = "GAME OVER"
-        this.context.fillText(text, 440, 375);
+        this.context.fillText(text, 450, 375);
     }
 
     update() {
