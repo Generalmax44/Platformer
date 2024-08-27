@@ -2,12 +2,17 @@ import { Rect } from "./rect.js";
 import { Vec2D } from "./vec2D.js";
 
 export class Button {
-    constructor(x, y, w, h, inactiveColor, activeColor, func) {
+    constructor(x, y, w, h, inactiveColor, activeColor, text, textX, textY, func) {
         this.pos = new Vec2D(x, y);
         this.width = w;
         this.height = h;
         this.inactiveColor = inactiveColor;
         this.activeColor = activeColor;
+
+        this.text = text;
+        this.textX = textX;
+        this.textY = textY;
+
         this.func = func;
 
         this.active = false;
@@ -35,5 +40,9 @@ export class Button {
 
     draw(context) {
         this.rect.draw(context, this.color);
+
+        context.font = "20px Arial";
+        context.fillStyle = "black";
+        context.fillText(this.text, this.pos.x + this.textX, this.pos.y + this.textY);
     }
 }

@@ -70,7 +70,7 @@ export class Game {
             this.alive = true;
 
             this.buttons = [
-                this.upgradeButton = new Button(20, 20, 100, 100, 'pink', 'purple', this.fireRateUpgrade),
+                this.upgradeButton = new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade),
                 // new Button(400, 400, 100, 100, 'grey', 'red') 
             ];
             this.initKeys();
