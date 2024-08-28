@@ -10,6 +10,7 @@ export class PhysicsBody {
 
         this.rect = new Rect(this.pos, this.width, this.height);
     }
+
     update(rects, gravity) {
         this.applyGravity(gravity);
 
@@ -48,6 +49,7 @@ export class PhysicsBody {
                 this.pos.y = rect.pos.y - this.height;
                 this.vel.y = 0;
                 this.canJump = true;
+                this.doubleJump = true;
                 // console.log(this.acc.y);
 
             } else if (this.pos.y >= rect.pos.y + rect.height) {

@@ -104,13 +104,14 @@ export class Game {
     }
 
     initializeGameVariables() {
-        this.money = 100;
+        this.money = 0;
 
         this.reloadCooldown = 1000; 
-        
+
         this.playerMagSize = 1;
-        this.bulletsRemaining = this.playerMagSize;
         this.reloading = false;
+
+        this.canDoubleJump = true;
     }
 
 //////////////////////////////////// Game Loop ////////////////////////////////////
@@ -186,7 +187,7 @@ export class Game {
     playPreFlight() {
         this.gameState = "play";
 
-        this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower);
+        this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower, this.canDoubleJump);
 
         this.environmentEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
@@ -200,6 +201,8 @@ export class Game {
 
         this.bullets = [];
 
+        this.bulletsRemaining = this.playerMagSize;
+
         this.enemies = [];
 
         this.coins = [];
@@ -208,7 +211,7 @@ export class Game {
 
         this.lastReloadTime = -this.reloadCooldown; // Initialize last shot time
 
-        this.alive = false;
+        this.alive = true;
 
         this.gameButtons = [
             // new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.reloadTimeUpgrade.bind(this)),
@@ -226,6 +229,8 @@ export class Game {
 
         this.shopButtons = [
             new Button(20, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.reloadTimeUpgrade.bind(this)),
+            new Button(350, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.magCapacityUpgrade.bind(this)),
+
             new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
         ];
     }
@@ -257,6 +262,13 @@ export class Game {
     updateButtonLocation() {
         this.gameOverButtons[0].pos.x = this.canvas.width / 2 - 120;
         this.gameOverButtons[1].pos.x = this.canvas.width / 2 + 20;
+    }
+
+    magCapacityUpgrade() {
+        if (this.money >= 5) {
+            this.money -= 5;
+            this.playerMagSize += 1;
+        }
     }
 
 //////////////////////////////////// Event Functions ////////////////////////////////////
@@ -320,11 +332,17 @@ export class Game {
             case 'd':
             case 'D':
                 this.keys.d = true;
-                break
+                break;
             case 'w':
             case 'W':
-            this.keys.w = true;
-            break
+                console.log(this.player.doubleJump)
+                if (!this.player.canJump && this.player.doubleJump) {
+                    console.log("double jump")
+                    this.player.vel.y = -this.player.jumpPower;
+                    this.player.doubleJump = false;
+                }
+                this.keys.w = true;
+                break;
         }
     }
 
@@ -486,7 +504,7 @@ export class Game {
 
         const currentTime = performance.now();
         let rect2Width = 0;
-        console.log((currentTime - this.lastReloadTime) / this.reloadCooldown * 100);
+        // console.log((currentTime - this.lastReloadTime) / this.reloadCooldown * 100);
         if (currentTime - this.lastReloadTime >= this.reloadCooldown) {
             rect2Width = 100;
             this.context.fillStyle = 'lime';
@@ -538,10 +556,17 @@ export class Game {
 
         let text = "Decrease reload time"
         this.context.fillText(text, 20, 150);
-        text = "Current reload time: " + this.reloadCooldown/1000 + "s"
+        text = "Current reload time: " + this.reloadCooldown/1000 + "s";
         this.context.fillText(text, 20, 180);
-        text = "Cost: $5"
+        text = "Cost: $5";
         this.context.fillText(text, 20, 210);
+
+        text = "Increase magazine capacity"
+        this.context.fillText(text, 350, 150);
+        text = "Current magazine capacity: " + this.playerMagSize;
+        this.context.fillText(text, 350, 180);
+        text = "Cost: $5";
+        this.context.fillText(text, 350, 210);
     }
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////
