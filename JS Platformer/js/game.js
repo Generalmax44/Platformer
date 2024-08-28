@@ -106,7 +106,7 @@ export class Game {
     initializeGameVariables() {
         this.money = 100;
 
-        this.shootCooldown = 1000; 
+        this.reloadCooldown = 1000; 
         this.playerMagSize = 1;
         this.bulletsRemaining = this.playerMagSize;
         this.reloading = false;
@@ -148,7 +148,7 @@ export class Game {
         }
 
         if (this.gameState == 'shop') {
-            console.log(this.shootCooldown);
+            console.log(this.reloadCooldown);
         }
     }
 
@@ -203,7 +203,7 @@ export class Game {
 
         this.score = 0;
 
-        this.lastShotTime = -this.shootCooldown; // Initialize last shot time
+        this.lastShotTime = -this.reloadCooldown; // Initialize last shot time
 
         this.alive = false;
 
@@ -231,12 +231,12 @@ export class Game {
     
     fireRateUpgrade() {
         console.log("CLick")
-        if (this.shootCooldown != 100) {
+        if (this.reloadCooldown != 100) {
             console.log(this.money);
             if (this.money >= 5) {
                 this.money -= 5;
-                this.shootCooldown -= 100;
-                console.log(this.shootCooldown)
+                this.reloadCooldown -= 100;
+                console.log(this.reloadCooldown)
             }
         }
     }
@@ -463,7 +463,7 @@ export class Game {
             this.reloading = true;
         }
         
-        if (currentTime - this.lastShotTime >= this.shootCooldown && this.reloading) {
+        if (currentTime - this.lastShotTime >= this.reloadCooldown && this.reloading) {
             this.bulletsRemaining = this.playerMagSize;
             this.reloading = false;
         }
@@ -483,12 +483,12 @@ export class Game {
 
         const currentTime = performance.now();
         let rect2Width = 0;
-        console.log((currentTime - this.lastShotTime) / this.shootCooldown * 100);
-        if (currentTime - this.lastShotTime >= this.shootCooldown) {
+        console.log((currentTime - this.lastShotTime) / this.reloadCooldown * 100);
+        if (currentTime - this.lastShotTime >= this.reloadCooldown) {
             rect2Width = 100;
             this.context.fillStyle = 'lime';
         } else{
-            rect2Width = ((currentTime - this.lastShotTime) / this.shootCooldown) * 100;
+            rect2Width = ((currentTime - this.lastShotTime) / this.reloadCooldown) * 100;
             this.context.fillStyle = 'yellow';
         }
         this.context.fillRect(rectX, rectY, rect2Width, rectHeight);    
