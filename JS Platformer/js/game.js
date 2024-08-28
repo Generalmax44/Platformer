@@ -107,6 +107,7 @@ export class Game {
         this.money = 100;
 
         this.reloadCooldown = 1000; 
+        
         this.playerMagSize = 1;
         this.bulletsRemaining = this.playerMagSize;
         this.reloading = false;
@@ -175,6 +176,8 @@ export class Game {
         if (this.gameState == 'shop') {
             this.shopButtons.forEach(button => button.draw(this.context));
             this.displayMoney(40);
+            this.displayShopTitle();
+            this.displayShopOptions();
         }    
     }
 
@@ -208,13 +211,13 @@ export class Game {
         this.alive = false;
 
         this.gameButtons = [
-            // new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
+            // new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.reloadTimeUpgrade.bind(this)),
             // new Button(400, 400, 100, 100, 'grey', 'red') 
         ];
 
         this.gameOverButtons = [
-            new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'green', 'lime', "Again", 24, 35, this.playAgain.bind(this)),
-            new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 25, 35, this.shopPreFlight.bind(this))
+            new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Again", 24, 35, this.playAgain.bind(this)),
+            new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this))
         ]
     }
 
@@ -222,14 +225,14 @@ export class Game {
         this.gameState = "shop";
 
         this.shopButtons = [
-            new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
-            new Button(100, 100, 100, 60, 'lime', 'green', "Play", 12, 35, this.playPreFlight.bind(this))
+            new Button(20, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.reloadTimeUpgrade.bind(this)),
+            new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
         ];
     }
 
 //////////////////////////////////// Button Functions ////////////////////////////////////
     
-    fireRateUpgrade() {
+    reloadTimeUpgrade() {
         console.log("CLick")
         if (this.reloadCooldown != 100) {
             console.log(this.money);
@@ -501,11 +504,11 @@ export class Game {
         this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 40);
     }
 
-    displayMoney(x) {
+    displayMoney(y) {
         this.context.font = "30px Arial";
         this.context.fillStyle = "black";
         let text = "Money: $" + this.money;
-        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, x);
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, y);
     }
 
     displayGameOver() {
@@ -520,6 +523,25 @@ export class Game {
         this.context.fillStyle = "black";
         let text = this.bulletsRemaining + "/" + this.playerMagSize;
         this.context.fillText(text, 30, 30);
+    }
+
+    displayShopTitle() {
+        this.context.font = "60px Arial";
+        this.context.fillStyle = "black";
+        let text = "PURCHASE UPGRADES"
+        this.context.fillText(text, 375, 70); //325
+    }
+
+    displayShopOptions() {
+        this.context.font = "25px Arial";
+        this.context.fillStyle = "black";
+
+        let text = "Decrease reload time"
+        this.context.fillText(text, 20, 150);
+        text = "Current reload time: " + this.reloadCooldown/1000 + "s"
+        this.context.fillText(text, 20, 180);
+        text = "Cost: $5"
+        this.context.fillText(text, 20, 210);
     }
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////

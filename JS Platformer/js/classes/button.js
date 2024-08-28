@@ -37,10 +37,17 @@ export class Button {
     }
 
     draw(context) {
+        this.drawBorder(context);
         this.rect.draw(context, this.color);
 
         context.font = "20px Arial";
         context.fillStyle = "black";
         context.fillText(this.text, this.pos.x + this.textX, this.pos.y + this.textY);
+
+    }
+
+    drawBorder(context) {
+        context.fillStyle = 'black';
+        context.fillRect(this.pos.x -2 , this.pos.y -2 , this.width + 4, this.height + 4);
     }
 }
