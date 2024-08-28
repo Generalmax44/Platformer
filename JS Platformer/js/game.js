@@ -159,7 +159,6 @@ export class Game {
         }
 
         if (this.gameState == 'shop') {
-            console.log(this.reloadCooldown);
         }
     }
 
@@ -167,8 +166,8 @@ export class Game {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.gameState == "play") {
             this.player.draw(this.context);
-            this.enemies.forEach(enemy => enemy.draw(this.context));
             this.environmentEntities.forEach(obj => obj.draw(this.context));
+            this.enemies.forEach(enemy => enemy.draw(this.context));
             this.bullets.forEach(bullet => bullet.draw(this.context));
             this.coins.forEach(coin => coin.draw(this.context));
             this.displayScore();
@@ -309,7 +308,7 @@ export class Game {
         if (this.gameState == 'shop') {
             this.shopButtons.forEach(button => {
                 if (button.active) {
-                    console.log(button)
+                    // console.log(button)
                     button.func(this); 
                 } 
             });
@@ -397,7 +396,7 @@ export class Game {
 
     spawnEnemies() {
         if (this.enemies.length == 0) {
-            this.enemies.push(new Enemy(this.getRandomInt(5, this.canvas.width - 55), -this.enemyHeight - 5, this.enemyWidth, this.enemyHeight, this.enemyColor, this.enemySpeed));
+            this.enemies.push(new Enemy(this.getRandomInt(30, this.canvas.width - 55), -this.enemyHeight - 5, this.enemyWidth, this.enemyHeight, this.enemyColor, this.enemySpeed));
         }
     }
 
@@ -412,12 +411,14 @@ export class Game {
         
                 if (bullet.rect.collide(enemy.rect)) {
                     // Remove enemy and bullet from their respective arrays
-                    this.enemies.splice(j, 1);
                     this.bullets.splice(i, 1);
-                    this.score += 5;
-                    this.coins.push(new Coin(enemy.pos.x + this.enemyWidth / 2, enemy.pos.y + this.enemyHeight / 2, 10, 'yellow'));
-                    // Break out of the inner loop since the bullet has already been removed
-                    break;
+                    enemy.health -=1;
+                    if (enemy.health <= 0) {
+                        this.enemies.splice(j, 1);
+                        this.score += 5;
+                        this.coins.push(new Coin(enemy.pos.x + this.enemyWidth / 2, enemy.pos.y + this.enemyHeight / 2, 10, 'yellow'));
+                        break;
+                    }
                 }
             }
         }

@@ -7,12 +7,14 @@ export class Enemy extends PhysicsBody {
     constructor(x, y, width, height, color, speed) {
         super(x, y, width, height, color)
         
-
         this.vel = new Vec2D(0, 0)
         this.acc = new Vec2D(0, 0)
 
         this.direction = 1
         this.speed = speed
+
+        this.maxHealth = 2
+        this.health = this.maxHealth;
     }
 
     update(canvasWidth, canvasHeight, rects, gravity) {
@@ -22,6 +24,12 @@ export class Enemy extends PhysicsBody {
         super.update(rects, gravity);
         this.checkBoundaries(canvasWidth, canvasHeight);
         // console.log(this.direction);
+    }
+
+    draw(context) {
+        super.draw(context);
+        this.displayHealthBar(context);
+
     }
 
     aI (playerPos) {
@@ -34,6 +42,7 @@ export class Enemy extends PhysicsBody {
         }
         this.vel.x = this.direction * this.speed;
     }
+
     updateVel() {
         this.vel.x = this.direction * this.speed;
     }
@@ -49,4 +58,15 @@ export class Enemy extends PhysicsBody {
             this.direction *= -1
         }
     }
+
+    displayHealthBar(context) {
+        if (this.health != this.maxHealth) {
+        
+        let width = (this.health / this.maxHealth) * this.width
+        context.fillStyle = 'red';
+        context.fillRect(this.pos.x, this.pos.y + this.height + 5, this.width, 10);
+        context.fillStyle = 'lime';
+        context.fillRect(this.pos.x, this.pos.y + this.height + 5, width, 10);
+        }
+    }    
 }
