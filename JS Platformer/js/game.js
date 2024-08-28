@@ -173,6 +173,7 @@ export class Game {
             this.displayScore();
             this.displayMoney(80);
             this.displayMagCount();
+            this.displayLevel();
             if (!this.alive) {
                 this.displayGameOver();
                 this.gameOverButtons.forEach(button => button.draw(this.context));
@@ -195,7 +196,7 @@ export class Game {
     playPreFlight() {
         this.gameState = "play";
 
-        this.player = new player(20, 20, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower, this.canDoubleJump);
+        this.player = new player(20, this.canvas.height - this.groundSize - this.playerHeight, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower, this.canDoubleJump);
 
         this.environmentEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
@@ -258,13 +259,7 @@ export class Game {
     }
 
     playAgain() {
-        this.enemies = [];
-        this.bullets = [];
-        this.coins = [];
-        this.player.pos.x = 20;
-        this.player.pos.y = 20;
-        this.score = 0;
-        this.alive = true;
+        this.playPreFlight();d
     }
 
     updateButtonLocation() {
@@ -398,7 +393,15 @@ export class Game {
         let difficulty = Math.floor(this.score / (5 * 5)) + 1;
         console.log(difficulty)
         if (this.enemies.length < difficulty) {
-            this.enemies.push(new Enemy(this.getRandomInt(30, this.canvas.width - 55), -this.enemyHeight - 5, this.enemyWidth, this.enemyHeight, this.enemyColor, this.enemySpeed));
+            const health = this.getRandomInt(1, difficulty)
+            console.log(this.enemyColors)
+            let color;
+            if (health <= 9) {
+                color = this.enemyColors[health]
+            } else {
+                color = 'black'
+            }
+            this.enemies.push(new Enemy(this.getRandomInt(30, this.canvas.width - 55), -this.enemyHeight - 5, this.enemyWidth, this.enemyHeight, color, this.enemySpeed, health));
         }
     }
 
@@ -540,6 +543,13 @@ export class Game {
         this.context.fillStyle = "black";
         let text = this.bulletsRemaining + "/" + this.playerMagSize;
         this.context.fillText(text, this.canvas.width - x, this.canvas.height - 10);
+    }
+
+    displayLevel() {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "black";
+        let text = "Current Level: " + (Math.floor(this.score / 25) + 1);
+        this.context.fillText(text, this.canvas.width - this.context.measureText(text).width - 20, 120);
     }
 
     displayShopTitle() {
