@@ -10,7 +10,7 @@ export class Enemy extends PhysicsBody {
         this.vel = new Vec2D(0, 0)
         this.acc = new Vec2D(0, 0)
 
-        this.direction = 1
+        this.direction = Math.random() < 0.5 ? 1 : -1;
         this.speed = speed
 
         this.maxHealth = maxHealth

@@ -118,6 +118,8 @@ export class Game {
         this.playerMagSize = 1;
         this.reloading = false;
 
+        this.bulletDamage = 1;
+
         this.infiniteAmmo = false;
 
         // this.canDoubleJump = true;
@@ -205,7 +207,11 @@ export class Game {
             new Platform(400, 350, 300, 20, 'orange'),
             new Platform(120, 500, 300, 20, 'orange'),
             new Platform(800, 300, 300, 20, 'orange'),
-            new Platform(1000, 600, 300, 20, 'orange')
+            new Platform(1000, 600, 300, 20, 'orange'),
+            new Platform(550, 170, 300, 20, 'orange'),
+            new Platform(1100, 200, 300, 20, 'orange'),
+            new Platform(700, 500, 300, 20, 'orange'),
+            new Platform(1200, 400, 300, 20, 'orange')
         ];
 
         this.bullets = [];
@@ -239,6 +245,7 @@ export class Game {
         this.shopButtons = [
             new Button(20, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.reloadTimeUpgrade.bind(this)),
             new Button(350, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.magCapacityUpgrade.bind(this)),
+            new Button(750, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.bulletDamageUpgrade.bind(this)),
 
             new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
         ];
@@ -271,6 +278,14 @@ export class Game {
         if (this.money >= 5) {
             this.money -= 5;
             this.playerMagSize += 1;
+        }
+    }
+
+    bulletDamageUpgrade() {
+        if (this.money >= 5) {
+            this.money -= 5;
+            this.bulletDamage += 1;
+            console.log(this.bulletDamage)
         }
     }
 
@@ -391,10 +406,8 @@ export class Game {
 
     spawnEnemies() {
         let difficulty = Math.floor(this.score / (5 * 5)) + 1;
-        console.log(difficulty)
         if (this.enemies.length < difficulty) {
             const health = this.getRandomInt(1, difficulty)
-            console.log(this.enemyColors)
             let color;
             if (health <= 9) {
                 color = this.enemyColors[health]
@@ -417,7 +430,7 @@ export class Game {
                 if (bullet.rect.collide(enemy.rect)) {
                     // Remove enemy and bullet from their respective arrays
                     this.bullets.splice(i, 1);
-                    enemy.health -=1;
+                    enemy.health -= this.bulletDamage;
                     if (enemy.health <= 0) {
                         this.enemies.splice(j, 1);
                         this.score += 5;
@@ -576,6 +589,13 @@ export class Game {
         this.context.fillText(text, 350, 180);
         text = "Cost: $5";
         this.context.fillText(text, 350, 210);
+
+        text = "Increase Bullet Damage"
+        this.context.fillText(text, 750, 150);
+        text = "Current bullet damage: " + this.bulletDamage;
+        this.context.fillText(text, 750, 180);
+        text = "Cost: $5";
+        this.context.fillText(text, 750, 210);
     }
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////

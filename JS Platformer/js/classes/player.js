@@ -27,6 +27,10 @@ export class player extends PhysicsBody {
 
         super.update(rects, gravity);
 
+        if (this.vel.y != 0) {
+            this.canJump = false;
+        }
+
         if (keys.up) {
             this.jump();
         }
