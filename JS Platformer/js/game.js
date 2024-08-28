@@ -107,6 +107,9 @@ export class Game {
         this.money = 100;
 
         this.shootCooldown = 1000; 
+        this.playerMagSize = 1;
+        this.bulletsRemaining = this.playerMagSize;
+        this.reloading = false;
     }
 
 //////////////////////////////////// Game Loop ////////////////////////////////////
@@ -139,6 +142,8 @@ export class Game {
                 this.playerCoinCollisions();
     
                 this.spawnEnemies();
+
+                this.updatePlayerMag();
             }
         }
 
@@ -157,12 +162,13 @@ export class Game {
             this.coins.forEach(coin => coin.draw(this.context));
             this.displayScore();
             this.displayMoney(80);
+            this.displayMagCount();
             if (!this.alive) {
                 this.displayGameOver();
                 this.gameOverButtons.forEach(button => button.draw(this.context));
             } else {
                 this.gameButtons.forEach(button => button.draw(this.context));
-                this.ShootCooldownIndicator();
+                this.reloadIndicator();
             }      
         }
 
@@ -202,7 +208,7 @@ export class Game {
         this.alive = false;
 
         this.gameButtons = [
-            new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
+            // new Button(20, 20, 100, 60, 'lime', 'green', "Upgrade", 12, 35, this.fireRateUpgrade.bind(this)),
             // new Button(400, 400, 100, 100, 'grey', 'red') 
         ];
 
@@ -354,12 +360,11 @@ export class Game {
 //////////////////////////////////// Bullet Functions ////////////////////////////////////
     
     fireBullet() {
-        const currentTime = performance.now();
-            // Check if enough time has passed since the last shot
-            if (currentTime - this.lastShotTime >= this.shootCooldown && this.alive) {
-                this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY), this.bulletSpeed));
-              this.lastShotTime = currentTime; // Update the last shot time
-            } 
+        // Check if enough time has passed since the last shot
+        if (this.bulletsRemaining > 0) {
+            this.bulletsRemaining -= 1;
+            this.bullets.push(new Bullet(this.player.pos.x + Math.floor(this.player.width / 2), this.player.pos.y + Math.floor(this.player.height / 2), 5, 'black', new Vec2D(event.clientX, event.clientY), this.bulletSpeed));
+        } 
     }
 
     bulletCleanUp() {
@@ -451,9 +456,22 @@ export class Game {
         });
     }
 
+    updatePlayerMag() {
+        const currentTime = performance.now();
+        if (this.bulletsRemaining == 0 && !this.reloading) {
+            this.lastShotTime = currentTime; // Update the last shot time
+            this.reloading = true;
+        }
+        
+        if (currentTime - this.lastShotTime >= this.shootCooldown && this.reloading) {
+            this.bulletsRemaining = this.playerMagSize;
+            this.reloading = false;
+        }
+    }
+
 //////////////////////////////////// Auxillary Draw Functions ////////////////////////////////////
 
-    ShootCooldownIndicator () {
+    reloadIndicator () {
         const rect1Width = 100;
         const rectHeight = 20;
         const rectX = this.canvas.width - rect1Width - 10; // 10px margin from the right
@@ -465,6 +483,7 @@ export class Game {
 
         const currentTime = performance.now();
         let rect2Width = 0;
+        console.log((currentTime - this.lastShotTime) / this.shootCooldown * 100);
         if (currentTime - this.lastShotTime >= this.shootCooldown) {
             rect2Width = 100;
             this.context.fillStyle = 'lime';
@@ -494,6 +513,13 @@ export class Game {
         this.context.fillStyle = "red";
         let text = "GAME OVER"
         this.context.fillText(text, 450, 375);
+    }
+
+    displayMagCount() {
+        this.context.font = "30px Arial";
+        this.context.fillStyle = "black";
+        let text = this.bulletsRemaining + "/" + this.playerMagSize;
+        this.context.fillText(text, 30, 30);
     }
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////
