@@ -51,7 +51,8 @@ export class Game {
 
             this.initializeGameVariables();
 
-            this.playPreFlight();
+            this.helpPreFlight();
+            // this.playPreFlight();
 
             this.gameLoop();
         }
@@ -99,6 +100,12 @@ export class Game {
 
                 if (this.gameState == 'shop') {
                     this.shopButtons.forEach(button => {
+                        button.update(event.clientX, event.clientY);
+                    });
+                }
+
+                if (this.gameState == 'help') {
+                    this.helpButtons.forEach(button => {
                         button.update(event.clientX, event.clientY);
                     });
                 }
@@ -190,7 +197,13 @@ export class Game {
             this.displayMoney(40);
             this.displayShopTitle();
             this.displayShopOptions();
-        }    
+        }   
+
+        if (this.gameState == 'help') {
+            this.helpButtons.forEach(button => button.draw(this.context));
+            this.displayHelp();
+            this.displayHelpTitle();
+        }
     }
 
 //////////////////////////////////// PreFlight Functions ////////////////////////////////////
@@ -234,8 +247,10 @@ export class Game {
         ];
 
         this.gameOverButtons = [
-            new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Play Again", 2, 35, this.playAgain.bind(this)),
-            new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this))
+            new Button(this.canvas.width / 2 - 200, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this)),
+            new Button(this.canvas.width / 2 - 50, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Play Again", 2, 35, this.playAgain.bind(this)),
+            new Button(this.canvas.width / 2 + 100, 400, 100, 60, 'rgb(204, 204, 0)', 'rgb(255, 255, 51)', "Help", 30, 35, this.helpPreFlight.bind(this))
+
         ]
     }
 
@@ -247,6 +262,14 @@ export class Game {
             new Button(350, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.magCapacityUpgrade.bind(this)),
             new Button(750, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.bulletDamageUpgrade.bind(this)),
 
+            new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
+        ];
+    }
+
+    helpPreFlight() {
+        this.gameState = 'help';
+
+        this.helpButtons = [
             new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
         ];
     }
@@ -266,12 +289,13 @@ export class Game {
     }
 
     playAgain() {
-        this.playPreFlight();d
+        this.playPreFlight();
     }
 
     updateButtonLocation() {
-        this.gameOverButtons[0].pos.x = this.canvas.width / 2 - 120;
-        this.gameOverButtons[1].pos.x = this.canvas.width / 2 + 20;
+        this.gameOverButtons[0].pos.x = this.canvas.width / 2 - 200;
+        this.gameOverButtons[1].pos.x = this.canvas.width / 2 - 50;
+        this.gameOverButtons[2].pos.x = this.canvas.width / 2 + 100;
     }
 
     magCapacityUpgrade() {
@@ -323,7 +347,15 @@ export class Game {
                 } 
             });
         }
-        
+
+        if (this.gameState == 'help') {
+            this.helpButtons.forEach(button => {
+                if (button.active) {
+                    // console.log(button)
+                    button.func(this); 
+                } 
+            });
+        }
     }
 
     handleKeyDown(event) {
@@ -596,6 +628,52 @@ export class Game {
         this.context.fillText(text, 750, 180);
         text = "Cost: $5";
         this.context.fillText(text, 750, 210);
+    }
+
+    displayHelpTitle () {
+        this.context.font = "60px Arial";
+        this.context.fillStyle = "black";
+        let text = "HELP"
+        this.context.fillText(text, 650, 70); //325
+    }
+
+    displayHelp () {
+        this.context.font = "25px Arial";
+        this.context.fillStyle = "black";
+
+        let text = 'Use the "a" key or left arrow to move left'
+        this.context.fillText(text, 20, 150);
+        text = 'Use the "d" key or right arrow to move right'
+        this.context.fillText(text, 20, 180);
+        text = 'Use the "w" key or space bar or up arrow to jump'
+        this.context.fillText(text, 20, 210);
+        text = 'Click anywhere on the screen to fire a bullet in the direction of the cursor'
+        this.context.fillText(text, 20, 240);
+        text = 'Whilst most of the games functionality work regardless of window size, for the best playing experience use a browser window'
+        this.context.fillText(text, 20, 270);
+        text = 'that is this size of a MacBook Air screen'
+        this.context.fillText(text, 20, 300);
+        text = 'A mouse or track pad or equivalent input device that can move the cursor and left click is required'
+        this.context.fillText(text, 20, 330);
+        
+
+        text = 'Kill enemies to progress through the game'
+        this.context.fillText(text, 20, 390);
+        text = 'The player dies and the game is over when an enemy reaches the player'
+        this.context.fillText(text, 20, 420);
+        text = 'Money collected from dead enemies can be used to purchase upgrades'
+        this.context.fillText(text, 20, 450);
+
+        text = 'Score will reset upon the player dying'
+        this.context.fillText(text, 20, 510);
+
+        text = "Money doesn't reset with each death and can be spent between games"
+        this.context.fillText(text, 20, 570);
+        text = "Upgrades don't reset after each game, Players can work on upgrades over the course of multiple games"
+        this.context.fillText(text, 20, 600);
+
+        text = "To exit the application, close the tab or turn off the local server hosting the applicaiton"
+        this.context.fillText(text, 20, 660);
     }
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////

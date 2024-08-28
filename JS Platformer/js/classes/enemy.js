@@ -29,7 +29,6 @@ export class Enemy extends PhysicsBody {
     draw(context) {
         super.draw(context);
         this.displayHealthBar(context);
-
     }
 
     aI (playerPos) {
