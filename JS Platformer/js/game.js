@@ -140,7 +140,7 @@ export class Game {
     
                 this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities, this.gravity);
             
-                this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.gravity));
+                this.enemies.forEach(enemy => enemy.update(this.canvas.width, this.canvas.height, this.environmentEntities, this.gravity, this.player.pos));
                 
                 this.playerEnemyCollisions();
     
@@ -234,7 +234,7 @@ export class Game {
         ];
 
         this.gameOverButtons = [
-            new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Again", 24, 35, this.playAgain.bind(this)),
+            new Button(this.canvas.width / 2 - 120, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Play Again", 2, 35, this.playAgain.bind(this)),
             new Button(this.canvas.width / 2 + 20, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this))
         ]
     }

@@ -17,9 +17,9 @@ export class Enemy extends PhysicsBody {
         this.health = this.maxHealth;
     }
 
-    update(canvasWidth, canvasHeight, rects, gravity) {
+    update(canvasWidth, canvasHeight, rects, gravity, playerPos) {
         this.updateVel();
-        // this.aI(playerPos);
+        this.aI(playerPos);
 
         super.update(rects, gravity);
         this.checkBoundaries(canvasWidth, canvasHeight);
@@ -33,12 +33,14 @@ export class Enemy extends PhysicsBody {
     }
 
     aI (playerPos) {
-        if (playerPos.x < this.pos.x) {
-            this.direction = -1;
-        } else if (playerPos.x > this.pos.x) {
-            this.direction = 1;
-        } else {
-            this.direction = 0;
+        if (playerPos.y == this.pos.y) {
+            if (playerPos.x < this.pos.x) {
+                this.direction = -1;
+            } else if (playerPos.x > this.pos.x) {
+                this.direction = 1;
+            } else {
+                this.direction = 0;
+            }
         }
         this.vel.x = this.direction * this.speed;
     }
