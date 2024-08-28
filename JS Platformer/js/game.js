@@ -395,7 +395,9 @@ export class Game {
 //////////////////////////////////// Enemy Functions ////////////////////////////////////
 
     spawnEnemies() {
-        if (this.enemies.length == 0) {
+        let difficulty = Math.floor(this.score / (5 * 5)) + 1;
+        console.log(difficulty)
+        if (this.enemies.length < difficulty) {
             this.enemies.push(new Enemy(this.getRandomInt(30, this.canvas.width - 55), -this.enemyHeight - 5, this.enemyWidth, this.enemyHeight, this.enemyColor, this.enemySpeed));
         }
     }
