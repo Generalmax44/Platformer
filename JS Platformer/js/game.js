@@ -320,31 +320,26 @@ export class Game {
     handleKeyDown(event) {
         switch(event.key) {
             case 'ArrowUp':
+            case 'w':
+            case 'W':
+            case ' ':
                 this.keys.up = true;
                 break;
+
             case 'ArrowDown':
                 this.keys.down = true;
                 break;
+
             case 'ArrowLeft':
-                this.keys.left = true;
-                break;
-            case 'ArrowRight':
-                this.keys.right = true;
-                break;
-            case ' ':
-                this.keys.space = true;
-                break;
             case 'a':
             case 'A':
-                this.keys.a = true;
+                this.keys.left = true;
                 break;
+
+            case 'ArrowRight':
             case 'd':
             case 'D':
-                this.keys.d = true;
-                break;
-            case 'w':
-            case 'W':
-                this.keys.w = true;
+                this.keys.right = true;
                 break;
         }
     }
@@ -352,32 +347,27 @@ export class Game {
     handleKeyUp(event) {
         switch(event.key) {
             case 'ArrowUp':
-                this.keys.up = false;
-                break;
-            case 'ArrowDown':
-                this.keys.down = false;
-                break;
-            case 'ArrowLeft':
-                this.keys.left = false;
-                break;
-            case 'ArrowRight':
-                this.keys.right = false;
-                break;
-            case ' ':
-                this.keys.space = false;
-                break;
-            case 'a':
-            case 'A':
-                this.keys.a = false;
-                break;
-            case 'd':
-            case 'D':
-                this.keys.d = false;
-                break;
-            case 'w':
-            case 'W':
-                this.keys.w = false;
-                break
+                case 'w':
+                case 'W':
+                case ' ':
+                    this.keys.up = false;
+                    break;
+    
+                case 'ArrowDown':
+                    this.keys.down = false;
+                    break;
+    
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    this.keys.left = false;
+                    break;
+    
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    this.keys.right = false;
+                    break;
         }
     }
 

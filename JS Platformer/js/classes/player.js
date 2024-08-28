@@ -27,7 +27,7 @@ export class player extends PhysicsBody {
 
         super.update(rects, gravity);
 
-        if (keys.space || keys.w || keys.up) {
+        if (keys.up) {
             this.jump();
         }
 
@@ -45,11 +45,11 @@ export class player extends PhysicsBody {
     }
 
     updateVel (keys) {
-        if ((keys.d || keys.right) && (keys.left || keys.a)) {
+        if (keys.right && keys.left) {
             this.vel.x = 0;
-        } else if (keys.right || keys.d) {
+        } else if (keys.right) {
             this.vel.x = 1;
-        } else if (keys.left || keys.a) {
+        } else if (keys.left) {
             this.vel.x = -1;
         } else {
             this.vel.x = 0;
