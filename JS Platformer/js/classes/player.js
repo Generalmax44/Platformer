@@ -10,7 +10,7 @@ export class player extends PhysicsBody {
 
         this.jumpPower = jumpPower;
 
-        this.doubleJump = true;
+        // this.doubleJump = true;
 
         this.vel = new Vec2D(0, 0);
         this.acc = new Vec2D(0, 0);
@@ -39,6 +39,7 @@ export class player extends PhysicsBody {
     jump() {
         if (this.canJump) {
             this.vel.y = -this.jumpPower;
+            // this.doubleJump = true;
             this.canJump = false;
         } 
     }
@@ -74,4 +75,14 @@ export class player extends PhysicsBody {
             this.pos.x = 0;
         }
     }
+
+    // attemptDoubleJump() {
+    //     console.log(this.doubleJump);
+    //     // console.log(!this.canJump && this.doubleJump);
+    //     if (!this.canJump && this.doubleJump) {
+    //         console.log("double jump")
+    //         this.vel.y = -this.jumpPower;
+    //         this.doubleJump = false;
+    //     }
+    // }
 }

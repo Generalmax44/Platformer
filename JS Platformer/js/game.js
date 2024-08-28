@@ -75,7 +75,14 @@ export class Game {
                 this.resizeCanvas();
                 this.updateButtonLocation();
             });
-            window.addEventListener('keydown', (event) => this.handleKeyDown(event));
+            window.addEventListener('keydown', (event) => {
+                this.handleKeyDown(event)
+                // if (this.gameState == 'play') {
+                //     if (this.alive) {
+                //         this.player.attemptDoubleJump();
+                //     }
+                // }
+            });
             window.addEventListener('keyup', (event) => this.handleKeyUp(event));
             window.addEventListener('click', (event) => this.click(event));
             window.addEventListener('blur', () => this.initKeys());
@@ -335,12 +342,6 @@ export class Game {
                 break;
             case 'w':
             case 'W':
-                console.log(this.player.doubleJump)
-                if (!this.player.canJump && this.player.doubleJump) {
-                    console.log("double jump")
-                    this.player.vel.y = -this.player.jumpPower;
-                    this.player.doubleJump = false;
-                }
                 this.keys.w = true;
                 break;
         }
