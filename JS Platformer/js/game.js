@@ -118,7 +118,9 @@ export class Game {
         this.playerMagSize = 1;
         this.reloading = false;
 
-        this.canDoubleJump = true;
+        this.infiniteAmmo = false;
+
+        // this.canDoubleJump = true;
     }
 
 //////////////////////////////////// Game Loop ////////////////////////////////////
@@ -538,10 +540,13 @@ export class Game {
     }
 
     displayMagCount() {
+        let x;
+        if (this.playerMagSize < 10) {x = 170}
+        else {x = 200}
         this.context.font = "30px Arial";
         this.context.fillStyle = "black";
         let text = this.bulletsRemaining + "/" + this.playerMagSize;
-        this.context.fillText(text, 30, 30);
+        this.context.fillText(text, this.canvas.width - x, this.canvas.height - 10);
     }
 
     displayShopTitle() {
