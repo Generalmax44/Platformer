@@ -203,7 +203,7 @@ export class Game {
 
         this.score = 0;
 
-        this.lastShotTime = -this.reloadCooldown; // Initialize last shot time
+        this.lastReloadTime = -this.reloadCooldown; // Initialize last shot time
 
         this.alive = false;
 
@@ -459,11 +459,11 @@ export class Game {
     updatePlayerMag() {
         const currentTime = performance.now();
         if (this.bulletsRemaining == 0 && !this.reloading) {
-            this.lastShotTime = currentTime; // Update the last shot time
+            this.lastReloadTime = currentTime; // Update the last shot time
             this.reloading = true;
         }
         
-        if (currentTime - this.lastShotTime >= this.reloadCooldown && this.reloading) {
+        if (currentTime - this.lastReloadTime >= this.reloadCooldown && this.reloading) {
             this.bulletsRemaining = this.playerMagSize;
             this.reloading = false;
         }
@@ -483,12 +483,12 @@ export class Game {
 
         const currentTime = performance.now();
         let rect2Width = 0;
-        console.log((currentTime - this.lastShotTime) / this.reloadCooldown * 100);
-        if (currentTime - this.lastShotTime >= this.reloadCooldown) {
+        console.log((currentTime - this.lastReloadTime) / this.reloadCooldown * 100);
+        if (currentTime - this.lastReloadTime >= this.reloadCooldown) {
             rect2Width = 100;
             this.context.fillStyle = 'lime';
         } else{
-            rect2Width = ((currentTime - this.lastShotTime) / this.reloadCooldown) * 100;
+            rect2Width = ((currentTime - this.lastReloadTime) / this.reloadCooldown) * 100;
             this.context.fillStyle = 'yellow';
         }
         this.context.fillRect(rectX, rectY, rect2Width, rectHeight);    
