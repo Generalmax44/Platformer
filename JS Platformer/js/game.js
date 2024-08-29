@@ -54,7 +54,8 @@ export class Game {
             this.initializeGameVariables();
 
             //init play state
-            this.playPreFlight();
+            // this.playPreFlight();
+            this.mainMenuPreFlight();
 
             this.gameLoop();
         }
@@ -109,6 +110,12 @@ export class Game {
 
             if (this.gameState == 'help') {
                 this.helpButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            }
+
+            if (this.gameState == 'menu') {
+                this.menuButtons.forEach(button => {
                     button.update(event.clientX, event.clientY);
                 });
             }
@@ -207,6 +214,11 @@ export class Game {
             this.displayHelp();
             this.displayHelpTitle();
         }
+
+        if (this.gameState == 'menu') {
+            this.menuButtons.forEach(button => button.draw(this.context));
+            this.displayMenuTitle();
+        }
     }
 
 //////////////////////////////////// PreFlight Functions ////////////////////////////////////
@@ -214,7 +226,7 @@ export class Game {
     playPreFlight() {
         this.gameState = "play";
 
-        this.player = new player(20, this.canvas.height - this.groundSize - this.playerHeight, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower, this.canDoubleJump);
+        this.player = new player(this.canvas.width / 2 - this.playerWidth / 2, this.canvas.height - this.groundSize - this.playerHeight, this.playerWidth, this.playerHeight, this.playerColor, this.playerSpeed, this.jumpPower, this.canDoubleJump);
 
         this.environmentEntities = [
             new Ground(0, window.innerHeight - this.groundSize, window.innerWidth, this.groundSize, 'green'),
@@ -277,6 +289,15 @@ export class Game {
         this.helpButtons = [
             new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this)),
             new Button(20, this.canvas.height - 80, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this)),
+        ];
+    }
+
+    mainMenuPreFlight () {
+        this.gameState = 'menu'
+        this.menuButtons = [
+            new Button(this.canvas.width / 2 - 200, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this)),
+            new Button(this.canvas.width / 2 - 50, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Play Again", 2, 35, this.playPreFlight.bind(this)),
+            new Button(this.canvas.width / 2 + 100, 400, 100, 60, 'rgb(204, 204, 0)', 'rgb(255, 255, 51)', "Help", 30, 35, this.helpPreFlight.bind(this))
         ];
     }
 
@@ -352,6 +373,15 @@ export class Game {
 
         if (this.gameState == 'help') {
             this.helpButtons.forEach(button => {
+                if (button.active) {
+                    // console.log(button)
+                    button.func(); 
+                } 
+            });
+        }
+
+        if (this.gameState == 'menu') {
+            this.menuButtons.forEach(button => {
                 if (button.active) {
                     // console.log(button)
                     button.func(); 
@@ -685,6 +715,13 @@ export class Game {
 
         text = "To exit the application, close the tab or turn off the local server hosting the application"
         this.context.fillText(text, 20, 660);
+    }
+
+    displayMenuTitle() {
+        this.context.font = "90px Arial";
+        this.context.fillStyle = "black";
+        let text = "Max's Epic Platformer"
+        this.context.fillText(text, 280, 360);
     }
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////
