@@ -265,7 +265,9 @@ export class Game {
             new Button(350, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.magCapacityUpgrade.bind(this)),
             new Button(750, 230, 100, 60, 'lime', 'green', "Purchase", 8, 35, this.bulletDamageUpgrade.bind(this)),
 
-            new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
+            new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this)),
+            new Button(20, this.canvas.height - 80, 100, 60, 'rgb(204, 204, 0)', 'rgb(255, 255, 51)', "Help", 30, 35, this.helpPreFlight.bind(this))
+
         ];
     }
 
@@ -273,7 +275,8 @@ export class Game {
         this.gameState = 'help';
 
         this.helpButtons = [
-            new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this))
+            new Button(this.canvas.width - 120, this.canvas.height - 80, 100, 60, 'lime', 'green', "Play", 30, 35, this.playPreFlight.bind(this)),
+            new Button(20, this.canvas.height - 80, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this)),
         ];
     }
 
