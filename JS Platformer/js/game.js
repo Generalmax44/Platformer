@@ -17,7 +17,7 @@ export class Game {
         this.context = this.canvas.getContext('2d');
 
         this.configPath = 'js/config.json'; // Store the path for later use
-        //load in varibales
+        //load in variables
         this.dataLoaded = false;
         this.loadData().then(() => {
             this.dataLoaded = true; // Mark data as loaded
