@@ -32,6 +32,7 @@ export class Enemy extends PhysicsBody {
     }
 
     aI (playerPos) {
+        //move towards player when on the same x coord
         if (playerPos.y == this.pos.y) {
             if (playerPos.x < this.pos.x) {
                 this.direction = -1;
@@ -49,6 +50,7 @@ export class Enemy extends PhysicsBody {
     }
 
     checkBoundaries (canvasWidth, canvasHeight) {
+        //if enemy hits edge of screen, change direction
         if (this.pos.x + this.width >= canvasWidth) {
             this.pos.x = canvasWidth - this.width;
             this.direction = -this.direction;
@@ -61,6 +63,7 @@ export class Enemy extends PhysicsBody {
     }
 
     displayHealthBar(context) {
+        // when enemy less then full health display health bar
         if (this.health != this.maxHealth) {
         
         let width = (this.health / this.maxHealth) * this.width

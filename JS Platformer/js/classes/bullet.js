@@ -14,6 +14,7 @@ export class Bullet extends Circle {
     }
 
     update() {
+        //move bullet
         this.vel.x = this.speed * (this.direction.x / this.direction.getMagnitude());
         this.vel.y = this.speed * (this.direction.y / this.direction.getMagnitude());
 

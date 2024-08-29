@@ -41,6 +41,7 @@ export class player extends PhysicsBody {
     }
 
     jump() {
+        //apply upwards velocity to make player jump
         if (this.canJump) {
             this.vel.y = -this.jumpPower;
             // this.doubleJump = true;
@@ -49,6 +50,7 @@ export class player extends PhysicsBody {
     }
 
     updateVel (keys) {
+        //adjust velocity based on user input
         if (keys.right && keys.left) {
             this.vel.x = 0;
         } else if (keys.right) {
@@ -71,6 +73,7 @@ export class player extends PhysicsBody {
     }
 
     checkBoundaries (canvasWidth, canvasHeight) {
+        // stop player moving outside of the screen
         if (this.pos.x + this.width >= canvasWidth) {
             this.pos.x = canvasWidth - this.width;
         }

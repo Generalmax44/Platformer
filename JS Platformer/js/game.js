@@ -12,10 +12,12 @@ import { Button } from './classes/button.js';
 
 export class Game {
     constructor () {
+        //get canvas html element
         this.canvas = document.getElementById('gameCanvas');
         this.context = this.canvas.getContext('2d');
 
         this.configPath = 'js/config.json'; // Store the path for later use
+        //load in varibales
         this.dataLoaded = false;
         this.loadData().then(() => {
             this.dataLoaded = true; // Mark data as loaded
@@ -51,6 +53,7 @@ export class Game {
 
             this.initializeGameVariables();
 
+            //init play state
             this.playPreFlight();
 
             this.gameLoop();
@@ -71,47 +74,49 @@ export class Game {
     }    
 
     setupEventListeners() {
-            window.addEventListener('resize', () => {
-                this.resizeCanvas();
-                this.updateButtonLocation();
-            });
-            window.addEventListener('keydown', (event) => {
-                this.handleKeyDown(event)
-                // if (this.gameState == 'play') {
-                //     if (this.alive) {
-                //         this.player.attemptDoubleJump();
-                //     }
-                // }
-            });
-            window.addEventListener('keyup', (event) => this.handleKeyUp(event));
-            window.addEventListener('click', (event) => this.click(event));
-            window.addEventListener('blur', () => this.initKeys());
-            window.addEventListener('mousemove', (event) => {
-                if (this.gameState == 'play') {
-                    this.gameButtons.forEach(button => {
-                        button.update(event.clientX, event.clientY);
-                    });
-                
-                    this.gameOverButtons.forEach(button => {
-                        button.update(event.clientX, event.clientY);
-                    });
-                }
+        //Detect user inputs
+        window.addEventListener('resize', () => {
+            this.resizeCanvas();
+            this.updateButtonLocation();
+        });
+        window.addEventListener('keydown', (event) => {
+            this.handleKeyDown(event)
+            // if (this.gameState == 'play') {
+            //     if (this.alive) {
+            //         this.player.attemptDoubleJump();
+            //     }
+            // }
+        });
+        window.addEventListener('keyup', (event) => this.handleKeyUp(event));
+        window.addEventListener('click', (event) => this.click(event));
+        window.addEventListener('blur', () => this.initKeys());
+        window.addEventListener('mousemove', (event) => {
+            if (this.gameState == 'play') {
+                this.gameButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            
+                this.gameOverButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            }
 
-                if (this.gameState == 'shop') {
-                    this.shopButtons.forEach(button => {
-                        button.update(event.clientX, event.clientY);
-                    });
-                }
+            if (this.gameState == 'shop') {
+                this.shopButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            }
 
-                if (this.gameState == 'help') {
-                    this.helpButtons.forEach(button => {
-                        button.update(event.clientX, event.clientY);
-                    });
-                }
-            });
+            if (this.gameState == 'help') {
+                this.helpButtons.forEach(button => {
+                    button.update(event.clientX, event.clientY);
+                });
+            }
+        });
     }
 
     resizeCanvas() {
+        //keep track of the size of the window
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
     }
@@ -142,6 +147,7 @@ export class Game {
     update() {
         if (this.gameState == 'play') {
             this.updateGround();
+            // Game paused when player dies by suspending update method.
             if (this.alive) {
     
                 this.player.update(this.keys, this.canvas.width, this.canvas.height, this.environmentEntities, this.gravity);
@@ -165,12 +171,10 @@ export class Game {
                 this.updatePlayerMag();
             }
         }
-
-        if (this.gameState == 'shop') {
-        }
     }
 
     draw() {
+        // clear screen every frame
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         if (this.gameState == "play") {
             this.player.draw(this.context);
@@ -247,7 +251,7 @@ export class Game {
 
         this.gameOverButtons = [
             new Button(this.canvas.width / 2 - 200, 400, 100, 60, 'rgb(204, 0, 204)', 'rgb(255, 51, 255)', "Shop", 27, 35, this.shopPreFlight.bind(this)),
-            new Button(this.canvas.width / 2 - 50, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Play Again", 2, 35, this.playAgain.bind(this)),
+            new Button(this.canvas.width / 2 - 50, 400, 100, 60, 'rgb(0, 204, 0)', 'rgb(51, 255, 51)', "Play Again", 2, 35, this.playPreFlight.bind(this)),
             new Button(this.canvas.width / 2 + 100, 400, 100, 60, 'rgb(204, 204, 0)', 'rgb(255, 255, 51)', "Help", 30, 35, this.helpPreFlight.bind(this))
 
         ]
@@ -285,10 +289,6 @@ export class Game {
                 console.log(this.reloadCooldown)
             }
         }
-    }
-
-    playAgain() {
-        this.playPreFlight();
     }
 
     updateButtonLocation() {
@@ -422,6 +422,7 @@ export class Game {
     }
 
     bulletCleanUp() {
+        //check if bullets are off the screen
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             let bullet = this.bullets[i];
             if (bullet.pos.x > this.canvas.width + 10 || bullet.pos.x < -10 || bullet.pos.y < -10) {
@@ -436,6 +437,7 @@ export class Game {
 //////////////////////////////////// Enemy Functions ////////////////////////////////////
 
     spawnEnemies() {
+        //determine "difficulty" based on how high the player's score is 
         let difficulty = Math.floor(this.score / (5 * 5)) + 1;
         if (this.enemies.length < difficulty) {
             const health = this.getRandomInt(1, difficulty)
@@ -452,6 +454,7 @@ export class Game {
 //////////////////////////////////// Collision Detection Functions ////////////////////////////////////
 
     bulletEnemyCollisions() {
+        //loop through bullet and enemy array, in each case test for a collision
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             let bullet = this.bullets[i];
         
@@ -474,6 +477,7 @@ export class Game {
     }
 
     bulletEnvironmentCollisions() {
+        //Loop through bullet array a check for collision with the environment, if true remove bullet from the array
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             let bullet = this.bullets[i];
         
@@ -491,6 +495,7 @@ export class Game {
     }
 
     playerCoinCollisions() {
+        //check If player collides with a coin and the update Money
         for (let i = this.coins.length - 1; i >= 0; i--) {
             let coin = this.coins[i];
             if (coin.rect.collide(this.player.rect)) {
@@ -502,6 +507,7 @@ export class Game {
     }
 
     playerEnemyCollisions() {
+        //check If enemy reaches player and end game
         this.enemies.forEach(enemy => {
             if (enemy.rect.collide(this.player.rect)) {
                 this.alive = false;
@@ -513,6 +519,7 @@ export class Game {
 //////////////////////////////////// Auxillary Update Functions ////////////////////////////////////
     
     updateGround() {
+        //resize ground in the event window is resized
         this.environmentEntities.forEach(entity => {
             if (entity instanceof Ground) {
                 entity.update(this.canvas.width, this.canvas.width);
@@ -521,6 +528,7 @@ export class Game {
     }
 
     updatePlayerMag() {
+        //check if player runs out of bullets then reload
         const currentTime = performance.now();
         if (this.bulletsRemaining == 0 && !this.reloading) {
             this.lastReloadTime = currentTime; // Update the last shot time
@@ -536,6 +544,7 @@ export class Game {
 //////////////////////////////////// Auxillary Draw Functions ////////////////////////////////////
 
     reloadIndicator () {
+        //draw indicator to visually indicate reload progress
         const rect1Width = 100;
         const rectHeight = 20;
         const rectX = this.canvas.width - rect1Width - 10; // 10px margin from the right
@@ -677,6 +686,7 @@ export class Game {
 
 //////////////////////////////////// Auxillary Functions ////////////////////////////////////
 
+// get random number
     getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }

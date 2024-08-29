@@ -25,15 +25,19 @@ export class PhysicsBody {
 
 
     applyGravity (gravity) {
+        //constantly increase downards velocity to simulate gravitaional force
         this.acc.y = gravity;
         this.vel.add(this.acc);
         this.vel.y =  Math.round(this.vel.y * 10) / 10;
     }
 
     testCollisions(rect) {
+        //create tempory rect with pos = pos + vel
         let testPos = new Vec2D(this.pos.x + this.vel.x, this.pos.y + this.vel.y)
         let testRect = new Rect(testPos, this.width, this.height)
         
+        //test if temp rect collides with parameter rect
+        //make comparison between the current location of the physicsObject and the parameter rect to deterine on what edge collision occours
         if (testRect.collide(rect)){  
             if (this.pos.x + this.width <= rect.pos.x) {
                 this.pos.x = rect.pos.x - this.width

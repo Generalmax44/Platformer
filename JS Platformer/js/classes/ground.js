@@ -19,6 +19,7 @@ export class Ground {
     }
 
     reSizeGround(canvasWidth, canvasHeight) {
+        //resize if window size changes
         if (this.width < canvasWidth) {
             this.width = canvasWidth;
             this.height = canvasHeight;

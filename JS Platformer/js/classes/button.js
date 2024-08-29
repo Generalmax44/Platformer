@@ -23,12 +23,14 @@ export class Button {
     }
 
     update(mousePosX, mousePosY) {
+        //check if cursor hovering over button
         if ((mousePosX > this.pos.x && mousePosX < this.pos.x + this.width) && (mousePosY > this.pos.y && mousePosY < this.pos.y + this.height)) {
             this.active = true;
         } else {
             this.active = false;
         }
 
+        //adjust color accordingly
         if (this.active) {
             this.color = this.activeColor;
         } else {
