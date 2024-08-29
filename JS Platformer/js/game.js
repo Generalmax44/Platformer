@@ -51,8 +51,7 @@ export class Game {
 
             this.initializeGameVariables();
 
-            this.helpPreFlight();
-            // this.playPreFlight();
+            this.playPreFlight();
 
             this.gameLoop();
         }
@@ -295,7 +294,7 @@ export class Game {
     updateButtonLocation() {
         this.gameOverButtons[0].pos.x = this.canvas.width / 2 - 200;
         this.gameOverButtons[1].pos.x = this.canvas.width / 2 - 50;
-        this.gameOverButtons[2].pos.x = this.canvas.width / 2 + 100;
+        // this.gameOverButtons[2].pos.x = this.canvas.width / 2 + 100;
     }
 
     magCapacityUpgrade() {
@@ -333,7 +332,7 @@ export class Game {
             } else if (!this.alive) {
                 this.gameOverButtons.forEach(button => {
                     if (button.active) {
-                        button.func(this); 
+                        button.func(); 
                     }
                 });
             } 
@@ -343,7 +342,7 @@ export class Game {
             this.shopButtons.forEach(button => {
                 if (button.active) {
                     // console.log(button)
-                    button.func(this); 
+                    button.func(); 
                 } 
             });
         }
@@ -352,7 +351,7 @@ export class Game {
             this.helpButtons.forEach(button => {
                 if (button.active) {
                     // console.log(button)
-                    button.func(this); 
+                    button.func(); 
                 } 
             });
         }
@@ -672,7 +671,7 @@ export class Game {
         text = "Upgrades don't reset after each game, Players can work on upgrades over the course of multiple games"
         this.context.fillText(text, 20, 600);
 
-        text = "To exit the application, close the tab or turn off the local server hosting the applicaiton"
+        text = "To exit the application, close the tab or turn off the local server hosting the application"
         this.context.fillText(text, 20, 660);
     }
 
