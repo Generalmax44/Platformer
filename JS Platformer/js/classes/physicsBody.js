@@ -25,7 +25,7 @@ export class PhysicsBody {
 
 
     applyGravity (gravity) {
-        //constantly increase downards velocity to simulate gravitaional force
+        //constantly increase downwards velocity to simulate gravitational force
         this.acc.y = gravity;
         this.vel.add(this.acc);
         this.vel.y =  Math.round(this.vel.y * 10) / 10;
